@@ -1,0 +1,163 @@
+n03008976	charger, battery charger
+
+n03088707	conductor
+    n02934168	cable, line, transmission line
+        n03059366	coaxial cable, coax, coax cable
+            n03300443	ethernet cable
+        n03268918	electrical cable
+        n03331599	fiber optic cable, fibre optic cable
+        n03995535	power line, power cable
+        n04004990	printer cable
+    n03106898	cord, electric cord
+        n03307037	extension cord
+        n03995265	power cord
+    n03274796	electrode
+        n02714315	anode
+        n02798117	base
+        n02984699	cathode
+            n03067093	cold cathode
+            n03924407	photocathode
+        n03069381	collector
+        n03277149	electron gun
+        n03283827	emitter
+        n03458552	grid, control grid  
+        n03510244	heat sink
+        n04171831	semiconductor device, semiconductor unit, semiconductor
+            n03020034	chip, microchip, micro chip, silicon chip, microprocessor chip
+                n02841641	biochip
+                n03433247	gene chip, DNA chip
+                n03744684	memory chip
+                    n04058486	read-only memory chip
+                n03760310	microprocessor
+            n03202760	diode, semiconductor diode, junction rectifier, crystal rectifier
+                n03666362	light-emitting diode, LED
+                    n03854506	organic light-emitting diode, OLED
+            n03833750	n-type semiconductor
+            n04017993	p-type semiconductor
+            n04420206	thermistor, thermal resistor
+            n04471632	transistor, junction transistor, electronic transistor
+                n03332784	field-effect transistor, FET
+                n03972146	p-n-p transistor
+            n04211001	shunt, electrical shunt, bypass
+            n04564413	waveguide, wave guide
+            n04594489	wire, conducting wire
+                n03336575	filament
+                n03604843	jumper cable, jumper lead, lead, booster cable
+                    n03044671	clip lead
+                n03651605	lead-in
+                n03898129	patchcord
+                n04402984	telephone wire, telephone line, telegraph wire, telegraph line
+                    n04401828	telephone cord, phone cord
+
+n03099945	converter, convertor
+    n03163798	data converter
+        n03195799	digital-analog converter, digital-to-analog converter
+        n03197446	digitizer, digitiser, analog-digital converter, analog-to-digital converter
+    n03269203	electrical converter
+    n03277602	electronic converter
+
+n03180969	detector, sensor, sensing element
+    n03751757	metal detector
+    n03924978	photoelectric cell, photoconductive cell, photocell, electric eye, magic eye
+
+n03269401	electrical device
+    n02715229	antenna, aerial, transmitting aerial
+        n03204134	dipole, dipole antenna
+        n03204955	directional antenna
+        n03846772	omnidirectional antenna, nondirectional antenna
+    n02755675	attenuator
+    n02810471	battery, electric battery
+        n02666624	A battery
+        n02813981	B battery
+        n02987950	C battery
+        n04540547	voltaic battery, galvanic battery
+    n02955247	capacitor, capacitance, condenser, electrical condenser
+        n02930339	bypass condenser, bypass capacitor
+        n03275681	electrolytic, electrolytic capacitor, electrolytic condenser
+        n04483779	trimmer, trimming capacitor
+    n02991048	cell, electric cell
+        n04257986	solar cell, photovoltaic cell
+        n04328580	storage cell, secondary cell
+    n03033362	circuit, electrical circuit, electric circuit
+        n03048883	closed circuit, loop
+            n03888808	parallel circuit, shunt circuit
+        n03084420	computer circuit
+            n03427656	gate, logic gate
+                And,OR,NAND,X-OR
+            n03577090	integrated circuit, microcircuit
+            n03578656	interface, port
+                n03888998	parallel interface, parallel port
+                n04174234	serial port
+                n04245218	small computer system interface, SCSI
+            n03778817	module
+            n04004210	printed circuit
+                Circuit-board
+                    CPU-board
+                    PC-board
+        n03326073	feedback circuit, feedback loop
+        n03669886	limiter, clipper
+        n03848033	open circuit
+        n04021704	pulse timing circuit
+        n03666238	light circuit, lighting circuit
+    n03340009	filter
+        n03519226	high-pass filter
+        n03694196	low-pass filter
+    n03407369	fuse, electrical fuse, safety fuse
+        n02972934	cartridge fuse
+        n03034244	circuit breaker, breaker
+        n03968479	plug fuse
+    n03569014	inductor, inductance
+    n03589513	jack
+    n03680248	load
+    n04057846	reactor
+        coil
+            n02738271	armature
+            n02750320	astatic coils
+            n03568818	induction coil
+            n04259202	solenoid
+    n04072960	relay, electrical relay
+    n04079933	resistor, resistance
+        n03991443	potential divider, voltage divider
+            n03991646	potentiometer, pot
+    n04086794	rheostat, variable resistor
+    n04471315	transformer
+        n03066232	coil
+    n04315342	step-down transformer
+    n04315828	step-up transformer
+
+n03277771	electronic device
+    n03221351	dongle
+    n03434285	generator
+        oscillator
+            n03143754	crystal oscillator, quartz oscillator
+            n03681813	local oscillator, heterodyne oscillator
+        n04021503	pulse generator
+    n03799113	multiplexer
+    n04494204	tube, vacuum tube, thermionic vacuum tube, thermionic tube, electron tube, thermionic valve
+    n04058594	readout, read-out
+    n03278248	electronic equipment
+        n02995345	central processing unit, CPU, C.P.U., central processor, processor, mainframe
+        n04176528	set
+            n04060647	receiver, receiving system
+            n04472726	transmitter, sender
+        n04401088	telephone, phone, telephone set
+    n06263762	storage medium, data-storage medium
+
+instrument
+    n02708711	analyzer, analysers
+    
+n03614007	keyboard
+
+n03699975	machine
+
+n03744840	memory device, storage device
+
+n03851341	optical device
+
+n04074963	remote control, remote
+
+n04294212	stabilizer, stabiliser
+
+n04063373	recorder, recording equipment, recording machine
+
+n04137444	satellite, artificial satellite, orbiter

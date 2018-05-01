@@ -1,0 +1,1 @@
+1 Label the images by bulk renaming images inside the folder with the respective folder name

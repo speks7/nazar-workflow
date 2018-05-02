@@ -8,7 +8,7 @@
 
 3 Duplicate the directory
 
-3 Open the newly duplicated directory and rename .jpg to .jpg.txt
+4 Open the newly duplicated directory and rename .jpg to .jpg.txt
     ```
     $ rename .jpg .jpg.txt *.jpg
     $ truncate -s 0 *.jpg.txt

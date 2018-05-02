@@ -1,0 +1,17 @@
+1 Label the images by bulk renaming images inside the folder with the respective folder name
+
+2 Copy all .jpg files to a single folder using
+    ```
+    $ find . -type f \( -iname "*.jpg" -o -iname "*.jpeg" \) -exec cp '{}' /cpjpg \;
+    ```
+    This will copy all files ending in .jpg or .jpeg (case insensitive as well) in the current directory and all its subdirectories to the directory /cpjpg. The directory structure is not copied.
+
+3 Duplicate the directory
+
+4 Open the newly duplicated directory and rename .jpg to .jpg.txt
+    ```
+    $ rename .jpg .jpg.txt *.jpg
+    $ truncate -s 0 *.jpg.txt
+    $ python3 filename.py /path/to/duplicate_dir
+    ```
+    which will rename the .jpg to .jpg.txt and then clear all line inside the .txt with addition on the label defined by the filename

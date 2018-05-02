@@ -1,3 +1,10 @@
 Simply run the appropriate command from retrain.sh. Feel free to play with the parameters but as we are running in collaboratory follow:
 
-1) Upload as a zip or whole directory to the Google Drive
+Upload as a zip or whole directory to the Google Drive or to use The GPU and internet follow:
+
+    1) Upload to Dropbox
+    2) Get the share link and replace:
+        https://www.dropbox.com/s/810h5vk6y47ieie/Multi-label-Inception.zip?dl=0
+        as
+        https://www.dropbox.com/s/810h5vk6y47ieie/Multi-label-Inception.zip?dl=1
+    3) Follow the Notebook

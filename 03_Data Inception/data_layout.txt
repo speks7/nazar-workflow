@@ -8,3 +8,10 @@
 3) Copy the *.jpg.txt files to image_labels_dir directory or change the path to this folder by editing global variable IMAGE_LABELS_DIR in retrain.py 
 
 4) Create file labels.txt in project root and fill it with all the possible labels. Each label on a new line, nothing else. Just like an image_label file for an image that is in all the possible classes.
+
+    For shortcut:
+    ```
+    find ./ -type f -name '*[!0-9][0][0][1].jpg.txt'
+    ```
+        - gives you a list of files as ./file001.jpg.txt
+        - Copy them and then replace thr ./ and 001.jpg.txt

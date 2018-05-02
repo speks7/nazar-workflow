@@ -11,9 +11,7 @@
 
 4) Copy the *.jpg.txt files to image_labels_dir directory or change the path to this folder by editing global variable IMAGE_LABELS_DIR in retrain.py 
 
-5) 
-
-6) Create file labels.txt in project root and fill it with all the possible labels. Each label on a new line, nothing else. Just like an image_label file for an image that is in all the possible classes.
+5) Create file labels.txt in project root and fill it with all the possible labels. Each label on a new line, nothing else. Just like an image_label file for an image that is in all the possible classes.
 
     For shortcut:
     ```
@@ -22,6 +20,6 @@
         - gives you a list of files as ./file001.jpg.txt
         - Copy them and then replace thr ./ and 001.jpg.txt
 
-7) We now have all the images inside one directory and therefore the image_lists.keys() contains only one element and that is the folder with all of our images (e.g. multi-label). All the training images are split into validation, testing and training sets accessible through this key.
+6) We now have all the images inside one directory and therefore the image_lists.keys() contains only one element and that is the folder with all of our images (e.g. multi-label). All the training images are split into validation, testing and training sets accessible through this key.
 
 For futher refer to: https://towardsdatascience.com/multi-label-image-classification-with-inception-net-cbb2ee538e30

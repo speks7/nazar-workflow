@@ -19,7 +19,7 @@ def main(path):
             split = ''.join([i for i in file if not i.isdigit()])
             head, sep, tail = split.partition('.')
             print (head)
-            writer = open(f,'a')
+            writer = open(path + '/' + f,'a')
             writer.write(head)
             writer.close()
 

@@ -12,4 +12,6 @@
     ```
     $ rename .jpg .jpg.txt *.jpg
     $ truncate -s 0 *.jpg.txt
+    $ python3 filename.py /path/to/duplicate_dir
     ```
+    which will rename the .jpg to .jpg.txt and then clear all line inside the .txt with addition on the label defined by the filename

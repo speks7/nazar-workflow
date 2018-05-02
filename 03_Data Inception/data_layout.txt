@@ -6,3 +6,5 @@
 2) Open Multi-label-Inception-net
 
 3) Copy the *.jpg.txt files to image_labels_dir directory or change the path to this folder by editing global variable IMAGE_LABELS_DIR in retrain.py 
+
+4) Create file labels.txt in project root and fill it with all the possible labels. Each label on a new line, nothing else. Just like an image_label file for an image that is in all the possible classes.

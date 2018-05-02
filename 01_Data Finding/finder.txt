@@ -1,0 +1,5 @@
+Use the Dataset_fetching.ipynb if your internet is too slow else:
+    ```
+    pip3 install imagenetscraper
+    imagenetscraper n03269401 electrical-device  --size 256,128
+    ```

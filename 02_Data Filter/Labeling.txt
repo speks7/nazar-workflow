@@ -2,6 +2,11 @@
 
 2 Copy all .jpg files to a single folder using
     ```
-    find . -type f \( -iname "*.jpg" -o -iname "*.jpeg" \) -exec cp '{}' /cpjpg \;
+    $ find . -type f \( -iname "*.jpg" -o -iname "*.jpeg" \) -exec cp '{}' /cpjpg \;
     ```
     This will copy all files ending in .jpg or .jpeg (case insensitive as well) in the current directory and all its subdirectories to the directory /cpjpg. The directory structure is not copied.
+
+3 Open the directory and rename .jpg to .jpg.txt
+    ```
+    $ rename .jpg .jpg.txt *.jpg
+    ```

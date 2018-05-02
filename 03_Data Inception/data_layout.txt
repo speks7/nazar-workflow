@@ -1,0 +1,8 @@
+1) Clone Multi-label-Inception-net
+    ```
+    $ https://github.com/BartyzalRadek/Multi-label-Inception-net
+    ```
+
+2) Open Multi-label-Inception-net
+
+3) Copy the *.jpg.txt files to image_labels_dir directory or change the path to this folder by editing global variable IMAGE_LABELS_DIR in retrain.py 

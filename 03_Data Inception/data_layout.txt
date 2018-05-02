@@ -18,7 +18,7 @@
     find ./ -type f -name '*[!0-9][0][0][1].jpg.txt'
     ```
         - gives you a list of files as ./file001.jpg.txt
-        - Copy them and then replace thr ./ and 001.jpg.txt
+        - Copy them and then replace the ./ and 001.jpg.txt inside labels.txt
 
 6) We now have all the images inside one directory and therefore the image_lists.keys() contains only one element and that is the folder with all of our images (e.g. multi-label). All the training images are split into validation, testing and training sets accessible through this key.
 

@@ -15,3 +15,7 @@
     ```
         - gives you a list of files as ./file001.jpg.txt
         - Copy them and then replace thr ./ and 001.jpg.txt
+
+5) We now have all the images inside one directory and therefore the image_lists.keys() contains only one element and that is the folder with all of our images (e.g. multi-label). All the training images are split into validation, testing and training sets accessible through this key.
+
+For futher refer to: https://towardsdatascience.com/multi-label-image-classification-with-inception-net-cbb2ee538e30

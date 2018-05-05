@@ -2,6 +2,9 @@ import argparse # Handles both optional and positional arguments
 import tensorflow as tf
 import sys
 import os
+from six.moves import urllib
+import tarfile
+from tensorflow.python.platform import gfile
 
 def ensure_dir_exists(dir_name):
     """Makes sure the folder exists on disk.
@@ -72,6 +75,59 @@ def create_model_info(architecture):
         'input_std': input_std,
     }
 
+def maybe_download_and_extract(data_url):
+    """Download and extract model tar file.
+
+    If the pretrained model we're using doesn't already exist, this function
+    downloads it from the TensorFlow.org website and unpacks it into a directory.
+
+    Args:
+        data_url: Web location of the tar file containing the pretrained model.
+    """
+
+    dest_directory = FLAGS.model_dir
+    if not os.path.exists(dest_directory):
+        os.makedirs(dest_directory)
+    filename = data_url.split('/')[-1]
+    filepath = os.path.join(dest_directory, filename)
+    if not os.path.exists(filepath):
+        def _progress(count, block_size, total_size):
+            sys.stdout.write('\r>> Downloading %s %.1f%%' %
+                            (filename,
+                                float(count * block_size) / float(total_size) * 100.0))
+            sys.stdout.flush()
+
+        filepath, _ = urllib.request.urlretrieve(data_url, filepath, _progress)
+        print()
+        statinfo = os.stat(filepath)
+        tf.logging.info('Successfully downloaded', filename, statinfo.st_size,
+                        'bytes.')
+    tarfile.open(filepath, 'r:gz').extractall(dest_directory) #Open the tarfile and extract
+
+def create_model_graph(model_info):
+    """"Creates a graph from saved GraphDef file and returns a Graph object.
+
+    Args:
+        model_info: Dictionary containing information about the model architecture.
+
+    Returns:
+        Graph holding the trained Inception network, and various tensors we'll be
+        manipulating.
+    """
+    with tf.Graph().as_default() as graph:
+        model_path = os.path.join(FLAGS.model_dir, model_info['model_file_name'])
+        with gfile.FastGFile(model_path, 'rb') as f: #open file in readmode
+            graph_def = tf.GraphDef()
+            graph_def.ParseFromString(f.read())
+            bottleneck_tensor, resized_input_tensor = (tf.import_graph_def(
+                graph_def,
+                name='',
+                return_elements=[
+                    model_info['bottleneck_tensor_name'],
+                    model_info['resized_input_tensor_name'],
+                ]))
+    return graph, bottleneck_tensor, resized_input_tensor
+
 def main(_):
     # Needed to make sure the logging output is visible
     tf.logging.set_verbosity(tf.logging.INFO)
@@ -84,7 +140,13 @@ def main(_):
     if not model_info:
         tf.logging.error('Did not recognize architecture flag')
         return -1
-    
+
+    # Set up the pre-trained graph.
+    maybe_download_and_extract(model_info['data_url'])
+
+    graph, bottleneck_tensor, resized_image_tensor = (
+        create_model_graph(model_info))
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

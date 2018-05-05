@@ -753,6 +753,15 @@ def main(_):
         validation_writer = tf.summary.FileWriter(
             FLAGS.summaries_dir + '/validation')
 
+        # Set up all our weights to their initial default values.
+        init = tf.global_variables_initializer()
+        sess.run(init)
+
+        # Run the training for as many cycles as requested on the command line.
+        for i in range(FLAGS.how_many_training_steps):
+            # Get a batch of input bottleneck values, either calculated fresh every
+            # time with distortions applied, or from the cache stored on disk.
+            
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

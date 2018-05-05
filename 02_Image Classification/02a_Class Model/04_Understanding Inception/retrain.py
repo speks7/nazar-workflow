@@ -226,6 +226,23 @@ def create_image_lists(image_dir, testing_percentage, validation_percentage):
         }
     return result #return list for dir name with train,test,validation
 
+def should_distort_images(flip_left_right, random_crop, random_scale,
+                            random_brightness): #Creating additional distortion before training
+    """Whether any distortions are enabled, from the input flags.
+
+    Args:
+        flip_left_right: Boolean whether to randomly mirror images horizontally.
+        random_crop: Integer percentage setting the total margin used around the
+        crop box.
+        random_scale: Integer percentage of how much to vary the scale by.
+        random_brightness: Integer range to randomly multiply the pixel values by.
+
+    Returns:
+        Boolean value indicating whether any distortions should be applied.
+    """
+    return (flip_left_right or (random_crop != 0) or (random_scale != 0) or
+            (random_brightness != 0)) #return T or F
+
 def main(_):
     # Needed to make sure the logging output is visible
     tf.logging.set_verbosity(tf.logging.INFO)
@@ -247,6 +264,21 @@ def main(_):
     # Look at the folder structure, and create lists of all the images.
     image_lists = create_image_lists(FLAGS.image_dir, FLAGS.testing_percentage,
                                     FLAGS.validation_percentage)
+    class_count = len(image_lists.keys()) # Count the total image list  
+
+    if class_count == 0: #No img folder found
+        tf.logging.error('No valid folders of images found at ' + FLAGS.image_dir)
+        return -1
+    if class_count == 1:  #only single image found
+        tf.logging.error('Only one valid folder of images found at ' +
+                        FLAGS.image_dir +
+                        ' - multiple classes are needed for classification.')
+        return -1
+
+    # See if the command-line flags mean we're applying any distortions (not applying currently)
+    do_distort_images = should_distort_images(
+        FLAGS.flip_left_right, FLAGS.random_crop, FLAGS.random_scale,
+        FLAGS.random_brightness)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

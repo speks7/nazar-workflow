@@ -12,6 +12,7 @@ import collections
 from tensorflow.python.framework import tensor_shape
 import numpy as np
 import random
+from datetime import datetime
 
 FLAGS = None
 
@@ -900,6 +901,53 @@ def main(_):
                     FLAGS.bottleneck_dir, FLAGS.image_dir, jpeg_data_tensor,
                     decoded_image_tensor, resized_image_tensor, bottleneck_tensor,
                     FLAGS.architecture)
+
+            # Feed the bottlenecks and ground truth into the graph, and run a training
+            # step. Capture training summaries for TensorBoard with the `merged` op.
+            train_summary, _ = sess.run(
+                [merged, train_step],
+                feed_dict={bottleneck_input: train_bottlenecks,
+                            ground_truth_input: train_ground_truth})
+            train_writer.add_summary(train_summary, i)
+
+            # Every so often, print out how well the graph is training.
+            is_last_step = (i + 1 == FLAGS.how_many_training_steps)
+            if (i % FLAGS.eval_step_interval) == 0 or is_last_step:
+                train_accuracy, cross_entropy_value = sess.run(
+                    [evaluation_step, cross_entropy],
+                    feed_dict={bottleneck_input: train_bottlenecks,
+                            ground_truth_input: train_ground_truth})
+                tf.logging.info('%s: Step %d: Train accuracy = %.1f%%' %
+                                (datetime.now(), i, train_accuracy * 100))
+                tf.logging.info('%s: Step %d: Cross entropy = %f' %
+                                (datetime.now(), i, cross_entropy_value))
+                validation_bottlenecks, validation_ground_truth, _ = (
+                    get_random_cached_bottlenecks(
+                        sess, image_lists, FLAGS.validation_batch_size, 'validation',
+                        FLAGS.bottleneck_dir, FLAGS.image_dir, jpeg_data_tensor,
+                        decoded_image_tensor, resized_image_tensor, bottleneck_tensor,
+                        FLAGS.architecture))
+                # Run a validation step and capture training summaries for TensorBoard
+                # with the `merged` op.
+                validation_summary, validation_accuracy = sess.run(
+                    [merged, evaluation_step],
+                    feed_dict={bottleneck_input: validation_bottlenecks,
+                            ground_truth_input: validation_ground_truth})
+                validation_writer.add_summary(validation_summary, i)
+                tf.logging.info('%s: Step %d: Validation accuracy = %.1f%% (N=%d)' %
+                                (datetime.now(), i, validation_accuracy * 100,
+                                len(validation_bottlenecks)))
+
+            # Store intermediate results
+            intermediate_frequency = FLAGS.intermediate_store_frequency
+
+            if (intermediate_frequency > 0 and (i % intermediate_frequency == 0)
+                and i > 0):
+                intermediate_file_name = (FLAGS.intermediate_output_graphs_dir +
+                                        'intermediate_' + str(i) + '.pb')
+                tf.logging.info('Save intermediate result to : ' +
+                                intermediate_file_name)
+                save_graph_to_file(sess, graph, intermediate_file_name)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

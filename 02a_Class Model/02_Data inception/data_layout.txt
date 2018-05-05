@@ -1,0 +1,6 @@
+1 Create a directory as:
+    class-label/
+        - images / 
+        - retrain.py
+        - retrain.sh
+        - label_image.py

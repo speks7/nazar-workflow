@@ -1,12 +1,14 @@
-1 Label the images by bulk renaming images inside the folder with the respective folder name
+1 Label the images by bulk renaming images inside the folder(inception is capable just by creaating with labelled folder though) with the respective folder name or use labelimg
 
-2 Copy all .jpg files to a single folder using
-    ```
-    $ find . -type f \( -iname "*.jpg" -o -iname "*.jpeg" \) -exec cp '{}' /cpjpg \;
-    ```
-    This will copy all files ending in .jpg or .jpeg (case insensitive as well) in the current directory and all its subdirectories to the directory /cpjpg. The directory structure is not copied.
+2 Create a single direcort having all the images like
+    images /
+        - capacitor / cap01.jpg , ... , cap50.jpg
+        - inductor / ind01.jpg , ... , ind50.jpg
 
-3 Duplicate the directory
+3 Create a directory as:
+    class-label/
+        - images
+        - 
 
 4 Open the newly duplicated directory and rename .jpg to .jpg.txt
     ```

@@ -1,9 +1,32 @@
 import argparse # Handles both optional and positional arguments
 import tensorflow as tf
 import sys
+import os
+
+def ensure_dir_exists(dir_name):
+    """Makes sure the folder exists on disk.
+
+    Args:
+        dir_name: Path string to the folder we want to create.
+    """
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+
+def prepare_file_system():
+    # Setup the directory we'll write summaries to for TensorBoard
+    if tf.gfile.Exists(FLAGS.summaries_dir):
+        tf.gfile.DeleteRecursively(FLAGS.summaries_dir) #If directory for summary found delete all file inside it
+    tf.gfile.MakeDirs(FLAGS.summaries_dir) #Crete the summaries directory
+    if FLAGS.intermediate_store_frequency > 0: # For steps to store intermediate graph > 0
+        ensure_dir_exists(FLAGS.intermediate_output_graphs_dir) #Check for intermediate graphs directory
+    return
 
 def main(_):
-    print("yolo")
+    # Needed to make sure the logging output is visible
+    tf.logging.set_verbosity(tf.logging.INFO)
+
+    # Prepare necessary directories  that can be used during training
+    prepare_file_system()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -187,5 +210,5 @@ if __name__ == '__main__':
         takes 128x128 images. See https://research.googleblog.com/2017/06/mobilenets-open-source-models-for.html
         for more information on Mobilenet.\
         """)
-    FLAGS, unparsed = parser.parse_known_args()
-    tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
+    FLAGS, unparsed = parser.parse_known_args() #Flags take the arugments passed
+    tf.app.run(main=main, argv=[sys.argv[0]] + unparsed) #Argv list takes the 1st argv with the unparsed value

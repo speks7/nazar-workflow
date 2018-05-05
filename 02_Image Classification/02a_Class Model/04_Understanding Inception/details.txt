@@ -24,5 +24,44 @@ How to Re-train Inception V3 model?
 
         Also, if you dig into the retrain.py, you can notice the Tensor name of the last trained layer.  You can search by "final_tensor_name"
 
+    On the other hand, if you intend to deploy your model on mobile devices or other resource-constrained environments, you may want to trade a little accuracy for much smaller file sizes or faster speeds (also in training). For that, try the different modules implementing the MobileNet V1 or V2 architectures, or also nasnet_mobile.
+
+    Training with a different module is easy: Just pass the --tfhub_module flag with the module URL, for example:
+
+    python retrain.py \
+        --image_dir ~/flower_photos \
+        --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/feature_vector/1
+
+    This will create a 9 MB model file in /tmp/output_graph.pb with a model that uses the baseline version of MobileNet V2. Opening the module URL in a browser will take you to the module documentation.
+
+Optimize for inference?
+
+    To avoid problems caused by unsupported training ops, the TensorFlow installation includes a tool, optimize_for_inference, that removes all nodes that aren't needed for a given set of input and outputs.
+
+    The script also does a few other optimizations that help speed up the model, such as merging explicit batch normalization operations into the convolutional weights to reduce the number of calculations. This can give a 30% speed up, depending on the input model. Here's how you run the script:
+
+    python -m tensorflow.python.tools.optimize_for_inference \
+    --input=tf_files/retrained_graph.pb \
+    --output=tf_files/optimized_graph.pb \
+    --input_names="input" \
+    --output_names="final_result"
+
+Make the model compressible?
+
+    Quantize the network weights:
+        Applying an almost identical process to your neural network weights has a similar effect. It gives a lot more repetition for the compression algorithm to take advantage of, while reducing the precision by a small amount (typically less than a 1% drop in precision).
+
+            python -m scripts.quantize_graph \
+            --input=tf_files/optimized_graph.pb \
+            --output=tf_files/rounded_graph.pb \
+            --output_node_names=final_result \
+            --mode=weights_rounded
+
+    gzip -c tf_files/optimized_graph.pb > tf_files/optimized_graph.pb.gz
+
+    gzip -l tf_files/optimized_graph.pb.gz
+
 Reference:
 http://ramstepsonweb.blogspot.com/2017/11/tensorflow-retraining-inception-v3.html
+https://www.tensorflow.org/tutorials/image_retraining
+https://codelabs.developers.google.com/codelabs/tensorflow-for-poets-2/index.html?index=..%2F..%2Findex#3

@@ -801,6 +801,12 @@ def get_random_cached_bottlenecks(sess, image_lists, how_many, category,
                 filenames.append(image_name)
     return bottlenecks, ground_truths, filenames
 
+def save_graph_to_file(sess, graph, graph_file_name):
+    output_graph_def = graph_util.convert_variables_to_constants(
+        sess, graph.as_graph_def(), [FLAGS.final_tensor_name])
+    with gfile.FastGFile(graph_file_name, 'wb') as f:
+        f.write(output_graph_def.SerializeToString())
+    return
 
 def main(_):
     # Needed to make sure the logging output is visible
@@ -948,6 +954,35 @@ def main(_):
                 tf.logging.info('Save intermediate result to : ' +
                                 intermediate_file_name)
                 save_graph_to_file(sess, graph, intermediate_file_name)
+
+        # We've completed all our training, so run a final test evaluation on
+        # some new images we haven't used before.
+        test_bottlenecks, test_ground_truth, test_filenames = (
+            get_random_cached_bottlenecks(
+                sess, image_lists, FLAGS.test_batch_size, 'testing',
+                FLAGS.bottleneck_dir, FLAGS.image_dir, jpeg_data_tensor,
+                decoded_image_tensor, resized_image_tensor, bottleneck_tensor,
+                FLAGS.architecture))
+        test_accuracy, predictions = sess.run(
+            [evaluation_step, prediction],
+            feed_dict={bottleneck_input: test_bottlenecks,
+                    ground_truth_input: test_ground_truth})
+        tf.logging.info('Final test accuracy = %.1f%% (N=%d)' %
+                        (test_accuracy * 100, len(test_bottlenecks)))
+
+        if FLAGS.print_misclassified_test_images:
+            tf.logging.info('=== MISCLASSIFIED TEST IMAGES ===')
+            for i, test_filename in enumerate(test_filenames):
+                if predictions[i] != test_ground_truth[i].argmax():
+                    tf.logging.info('%70s  %s' %
+                                    (test_filename,
+                                    list(image_lists.keys())[predictions[i]]))
+
+        # Write out the trained graph and labels with the weights stored as
+        # constants.
+        save_graph_to_file(sess, graph, FLAGS.output_graph)
+        with gfile.FastGFile(FLAGS.output_labels, 'w') as f:
+            f.write('\n'.join(image_lists.keys()) + '\n')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

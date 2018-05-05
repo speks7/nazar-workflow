@@ -243,6 +243,33 @@ def should_distort_images(flip_left_right, random_crop, random_scale,
     return (flip_left_right or (random_crop != 0) or (random_scale != 0) or
             (random_brightness != 0)) #return T or F
 
+def add_jpeg_decoding(input_width, input_height, input_depth, input_mean,
+                      input_std):
+    """Adds operations that perform JPEG decoding and resizing to the graph..
+
+    Args:
+        input_width: Desired width of the image fed into the recognizer graph.
+        input_height: Desired width of the image fed into the recognizer graph.
+        input_depth: Desired channels of the image fed into the recognizer graph.
+        input_mean: Pixel value that should be zero in the image for the graph.
+        input_std: How much to divide the pixel values by before recognition.
+
+    Returns:
+        Tensors for the node to feed JPEG data into, and the output of the
+        preprocessing steps.
+    """
+    jpeg_data = tf.placeholder(tf.string, name='DecodeJPGInput') #setup placeholder
+    decoded_image = tf.image.decode_jpeg(jpeg_data, channels=input_depth) # Decode a JPEG-encoded image to a uint8 tensor.
+    decoded_image_as_float = tf.cast(decoded_image, dtype=tf.float32) # Cast x of type SrcT to y of DstT.
+    decoded_image_4d = tf.expand_dims(decoded_image_as_float, 0) # Inserts a dimension of 1 into a tensor's shape.
+    resize_shape = tf.stack([input_height, input_width]) # Take resize shape
+    resize_shape_as_int = tf.cast(resize_shape, dtype=tf.int32) # Convert to int from float
+    resized_image = tf.image.resize_bilinear(decoded_image_4d,
+                                            resize_shape_as_int) # Resize images to size using bilinear interpolation.
+    offset_image = tf.subtract(resized_image, input_mean)
+    mul_image = tf.multiply(offset_image, 1.0 / input_std)
+    return jpeg_data, mul_image # Return jpeg placeholder and the scaled image tensor
+
 def main(_):
     # Needed to make sure the logging output is visible
     tf.logging.set_verbosity(tf.logging.INFO)
@@ -279,6 +306,13 @@ def main(_):
     do_distort_images = should_distort_images(
         FLAGS.flip_left_right, FLAGS.random_crop, FLAGS.random_scale,
         FLAGS.random_brightness)
+    
+    with tf.Session(graph=graph) as sess:
+        # Set up the image decoding sub-graph.
+        jpeg_data_tensor, decoded_image_tensor = add_jpeg_decoding(
+            model_info['input_width'], model_info['input_height'],
+            model_info['input_depth'], model_info['input_mean'],
+            model_info['input_std'])
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

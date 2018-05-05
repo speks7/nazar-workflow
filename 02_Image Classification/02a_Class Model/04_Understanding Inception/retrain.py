@@ -10,6 +10,7 @@ import hashlib
 from tensorflow.python.util import compat
 import collections
 from tensorflow.python.framework import tensor_shape
+import numpy as np
 
 FLAGS = None
 
@@ -653,6 +654,27 @@ def add_final_training_ops(class_count, final_tensor_name, bottleneck_tensor,
     return (train_step, cross_entropy_mean, bottleneck_input, ground_truth_input,
             final_tensor)
 
+def add_evaluation_step(result_tensor, ground_truth_tensor):
+    """Inserts the operations we need to evaluate the accuracy of our results.
+
+    Args:
+        result_tensor: The new final node that produces results.
+        ground_truth_tensor: The node we feed ground truth data
+        into.
+
+    Returns:
+        Tuple of (evaluation step, prediction).
+    """
+    with tf.name_scope('accuracy'):
+        with tf.name_scope('correct_prediction'):
+            prediction = tf.argmax(result_tensor, 1)
+            correct_prediction = tf.equal(
+                prediction, tf.argmax(ground_truth_tensor, 1))
+        with tf.name_scope('accuracy'):
+            evaluation_step = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+    tf.summary.scalar('accuracy', evaluation_step)
+    return evaluation_step, prediction
+
 def main(_):
     # Needed to make sure the logging output is visible
     tf.logging.set_verbosity(tf.logging.INFO)
@@ -718,6 +740,19 @@ def main(_):
         final_tensor) = add_final_training_ops(
             len(image_lists.keys()), FLAGS.final_tensor_name, bottleneck_tensor,
             model_info['bottleneck_tensor_size']) # Add the layer for softmax
+
+        # Create the operations we need to evaluate the accuracy of our new layer.
+        evaluation_step, prediction = add_evaluation_step(
+            final_tensor, ground_truth_input)
+
+        # Merge all the summaries and write them out to the summaries_dir
+        merged = tf.summary.merge_all()
+        train_writer = tf.summary.FileWriter(FLAGS.summaries_dir + '/train',
+                                            sess.graph)
+        
+        validation_writer = tf.summary.FileWriter(
+            FLAGS.summaries_dir + '/validation')
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

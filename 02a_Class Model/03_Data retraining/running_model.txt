@@ -1,0 +1,14 @@
+Simply run the appropriate command from retrain.sh. Feel free to play with the parameters but as we are running in collaboratory follow:
+
+Upload as a zip or whole directory to the Google Drive
+    1) to use The GPU and internet follow:
+            1) Upload to Dropbox
+            2) Get the share link and replace:
+                https://www.dropbox.com/s/96629zve9rxe4u1/class-label.zip?dl=0
+                 as
+                https://www.dropbox.com/s/96629zve9rxe4u1/class-label.zip?dl=1
+            3) Follow the Training_nodrive.ipnb
+
+    2) to use the direct drive:
+            1) Upload the full folder to a certain google drive directory
+            2) Follow the Training_drive.ipnb

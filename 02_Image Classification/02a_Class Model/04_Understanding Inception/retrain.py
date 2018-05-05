@@ -21,12 +21,70 @@ def prepare_file_system():
         ensure_dir_exists(FLAGS.intermediate_output_graphs_dir) #Check for intermediate graphs directory
     return
 
+def create_model_info(architecture):
+    """Given the name of a model architecture, returns information about it.
+
+    There are different base image recognition pretrained models that can be
+    retrained using transfer learning, and this function translates from the name
+    of a model to the attributes that are needed to download and train with it.
+
+    Args:
+        architecture: Name of a model architecture.
+
+    Returns:
+        Dictionary of information about the model, or None if the name isn't
+        recognized
+
+    Raises:
+        ValueError: If architecture name is unknown.
+    """
+    architecture = architecture.lower()
+    if architecture == 'inception_v3':
+        # pylint: disable=line-too-long
+        # Download the inception model with defination and file name
+        data_url = 'http://download.tensorflow.org/models/image/imagenet/inception-2015-12-05.tgz'
+        # pylint: enable=line-too-long
+        bottleneck_tensor_name = 'pool_3/_reshape:0'
+        bottleneck_tensor_size = 2048
+        input_width = 299
+        input_height = 299
+        input_depth = 3
+        resized_input_tensor_name = 'Mul:0'
+        model_file_name = 'classify_image_graph_def.pb'
+        input_mean = 128
+        input_std = 128
+    else:
+        # Raise erro if not known archi
+        tf.logging.error("Couldn't understand architecture name '%s'", architecture)
+        raise ValueError('Unknown architecture', architecture)
+
+    #Return the Info Dictionary
+    return {
+        'data_url': data_url,
+        'bottleneck_tensor_name': bottleneck_tensor_name,
+        'bottleneck_tensor_size': bottleneck_tensor_size,
+        'input_width': input_width,
+        'input_height': input_height,
+        'input_depth': input_depth,
+        'resized_input_tensor_name': resized_input_tensor_name,
+        'model_file_name': model_file_name,
+        'input_mean': input_mean,
+        'input_std': input_std,
+    }
+
 def main(_):
     # Needed to make sure the logging output is visible
     tf.logging.set_verbosity(tf.logging.INFO)
 
     # Prepare necessary directories  that can be used during training
     prepare_file_system()
+
+    # Gather information about the model architecture we'll be using.
+    model_info = create_model_info(FLAGS.architecture) #Archi inception for now
+    if not model_info:
+        tf.logging.error('Did not recognize architecture flag')
+        return -1
+    
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

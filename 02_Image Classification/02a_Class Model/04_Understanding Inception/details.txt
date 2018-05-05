@@ -1,14 +1,12 @@
 What?
-Inception library just can be used to classify an image/ object. Hope you understand what object detection and classification means.
-To build a model from scratch requires more GPU computation and does requires more amount of time. with the help of pre-trained models, we can retrain the final layer with our custom image class which will take very lesser time than building model from scratch.
+    Inception library just can be used to classify an image/ object. Hope you understand what object detection and classification means.
+    To build a model from scratch requires more GPU computation and does requires more amount of time. with the help of pre-trained models, we can retrain the final layer with our custom image class which will take very lesser time than building model from scratch.
 
 How does re-training work?
-
-The last but one layer of the neural network is trained to give out different values based on the image that it gets. This layer has enough summarized information to provide the next layer which does the actual classification task. This last but one layer is called the bottleneck.
-Tensorflow computes all the bottleneck values as the first step in training. The bottleneck values are then stored as they will be required for each iteration of training. The computation of these values is faster because tensorflow takes the help of existing pre-trained model to assist it with the process.
+    The last but one layer of the neural network is trained to give out different values based on the image that it gets. This layer has enough summarized information to provide the next layer which does the actual classification task. This last but one layer is called the bottleneck.
+    Tensorflow computes all the bottleneck values as the first step in training. The bottleneck values are then stored as they will be required for each iteration of training. The computation of these values is faster because tensorflow takes the help of existing pre-trained model to assist it with the process.
 
 How to Re-train Inception V3 model?
-
     1) Plan for new classes or categories need to be re-trained (ie create images folder done)
     2) Download other retrain resources (done)
     3) As defined in .sh file:
@@ -28,40 +26,67 @@ How to Re-train Inception V3 model?
 
     Training with a different module is easy: Just pass the --tfhub_module flag with the module URL, for example:
 
-    python retrain.py \
-        --image_dir ~/flower_photos \
-        --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/feature_vector/1
+        python retrain.py \
+            --image_dir ~/images \
+            --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/feature_vector/1
 
     This will create a 9 MB model file in /tmp/output_graph.pb with a model that uses the baseline version of MobileNet V2. Opening the module URL in a browser will take you to the module documentation.
 
 Optimize for inference?
-
     To avoid problems caused by unsupported training ops, the TensorFlow installation includes a tool, optimize_for_inference, that removes all nodes that aren't needed for a given set of input and outputs.
 
     The script also does a few other optimizations that help speed up the model, such as merging explicit batch normalization operations into the convolutional weights to reduce the number of calculations. This can give a 30% speed up, depending on the input model. Here's how you run the script:
 
     python -m tensorflow.python.tools.optimize_for_inference \
-    --input=tf_files/retrained_graph.pb \
-    --output=tf_files/optimized_graph.pb \
+    --input=retrained_graph.pb \
+    --output=optimized_graph.pb \
     --input_names="input" \
     --output_names="final_result"
 
 Make the model compressible?
-
     Quantize the network weights:
         Applying an almost identical process to your neural network weights has a similar effect. It gives a lot more repetition for the compression algorithm to take advantage of, while reducing the precision by a small amount (typically less than a 1% drop in precision).
 
             python -m scripts.quantize_graph \
-            --input=tf_files/optimized_graph.pb \
-            --output=tf_files/rounded_graph.pb \
+            --input=ptimized_graph.pb \
+            --output=rounded_graph.pb \
             --output_node_names=final_result \
             --mode=weights_rounded
 
-    gzip -c tf_files/optimized_graph.pb > tf_files/optimized_graph.pb.gz
+    gzip -c optimized_graph.pb > optimized_graph.pb.gz
 
-    gzip -l tf_files/optimized_graph.pb.gz
+    gzip -l optimized_graph.pb.gz
+
+Optimize the model using TOCO?
+    IMAGE_SIZE=224
+    toco \
+    --input_file=retrained_graph.pb \
+    --output_file=optimized_graph.pb \
+    --input_format=TENSORFLOW_GRAPHDEF \
+    --output_format=TENSORFLOW_GRAPHDEF \
+    --input_shape=1,${IMAGE_SIZE},${IMAGE_SIZE},3 \
+    --input_array=input \
+    --output_array=final_result
+
+Evalauation:
+    python -m scripts.evaluate retrained_graph.pb
+    python -m scripts.evaluate optimized_graph.pb
+
+Convert to model to TFLite format(not needed):
+    IMAGE_SIZE=224
+    toco \
+    --input_file=tf_files/retrained_graph.pb \
+    --output_file=tf_files/optimized_graph.lite \
+    --input_format=TENSORFLOW_GRAPHDEF \
+    --output_format=TFLITE \
+    --input_shape=1,${IMAGE_SIZE},${IMAGE_SIZE},3 \
+    --input_array=input \
+    --output_array=final_result \
+    --inference_type=FLOAT \
+    --input_type=FLOAT
 
 Reference:
 http://ramstepsonweb.blogspot.com/2017/11/tensorflow-retraining-inception-v3.html
 https://www.tensorflow.org/tutorials/image_retraining
 https://codelabs.developers.google.com/codelabs/tensorflow-for-poets-2/index.html?index=..%2F..%2Findex#3
+https://codelabs.developers.google.com/codelabs/tensorflow-for-poets-2-tflite/index.html?index=..%2F..%2Findex#3

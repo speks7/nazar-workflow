@@ -1,0 +1,28 @@
+What?
+Inception library just can be used to classify an image/ object. Hope you understand what object detection and classification means.
+To build a model from scratch requires more GPU computation and does requires more amount of time. with the help of pre-trained models, we can retrain the final layer with our custom image class which will take very lesser time than building model from scratch.
+
+How does re-training work?
+
+The last but one layer of the neural network is trained to give out different values based on the image that it gets. This layer has enough summarized information to provide the next layer which does the actual classification task. This last but one layer is called the bottleneck.
+Tensorflow computes all the bottleneck values as the first step in training. The bottleneck values are then stored as they will be required for each iteration of training. The computation of these values is faster because tensorflow takes the help of existing pre-trained model to assist it with the process.
+
+How to Re-train Inception V3 model?
+
+    1) Plan for new classes or categories need to be re-trained (ie create images folder done)
+    2) Download other retrain resources (done)
+    3) As defined in .sh file:
+        python retrain.py --model_dir ./model_dir --image_dir ~/images --output_graph retrained_graph.pb --how_many_training_steps 500
+
+        where
+            –model_dir – This parameter gives the location of the pre-trained model. (http://download.tensorflow.org/models/image/imagenet/inception-2015-12-05.tgz model auto downloaded)
+            –image_dir – Path of the image folder which was created in step 1
+            –output_graph –  The location to store the newly trained graph.
+            –how_many_training_steps – Training steps indicate the number iterations to perform. By default, this is 4000. Finding the right number is a trial and error process and once you find the best model, you can start using that.
+
+        The output the above script running will generate a graph definition file name retrained_graph.pb.which will be used later to test the retrained model.
+
+        Also, if you dig into the retrain.py, you can notice the Tensor name of the last trained layer.  You can search by "final_tensor_name"
+
+Reference:
+http://ramstepsonweb.blogspot.com/2017/11/tensorflow-retraining-inception-v3.html

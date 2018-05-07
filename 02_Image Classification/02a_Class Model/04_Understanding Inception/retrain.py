@@ -1,18 +1,20 @@
-import argparse # Handles both optional and positional arguments
-import tensorflow as tf
-import sys
-import os
-from six.moves import urllib
-import tarfile
-from tensorflow.python.platform import gfile
-import re
-import hashlib
-from tensorflow.python.util import compat
+import argparse  # Handles both optional and positional arguments
 import collections
-from tensorflow.python.framework import tensor_shape
-import numpy as np
+import hashlib
+import os
 import random
+import re
+import sys
+import tarfile
 from datetime import datetime
+
+import numpy as np
+import tensorflow as tf
+from tensorflow.python.framework import graph_util, tensor_shape
+from tensorflow.python.platform import gfile
+from tensorflow.python.util import compat
+
+from six.moves import urllib
 
 FLAGS = None
 

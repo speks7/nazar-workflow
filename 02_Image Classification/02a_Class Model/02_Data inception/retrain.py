@@ -95,6 +95,7 @@ from __future__ import division
 from __future__ import print_function
 
 import argparse
+import collections
 from datetime import datetime
 import hashlib
 import os.path
@@ -140,14 +141,13 @@ def create_image_lists(image_dir, testing_percentage, validation_percentage):
   if not gfile.Exists(image_dir):
     tf.logging.error("Image directory '" + image_dir + "' not found.")
     return None
-  result = {}
-  sub_dirs = [x[0] for x in gfile.Walk(image_dir)]
-  # The root directory comes first, so skip it.
-  is_root_dir = True
+  result = collections.OrderedDict()
+  sub_dirs = [
+    os.path.join(image_dir,item)
+    for item in gfile.ListDirectory(image_dir)]
+  sub_dirs = sorted(item for item in sub_dirs
+                    if gfile.IsDirectory(item))
   for sub_dir in sub_dirs:
-    if is_root_dir:
-      is_root_dir = False
-      continue
     extensions = ['jpg', 'jpeg', 'JPG', 'JPEG']
     file_list = []
     dir_name = os.path.basename(sub_dir)
@@ -293,7 +293,7 @@ def run_bottleneck_on_image(sess, image_data, image_data_tensor,
     sess: Current active TensorFlow Session.
     image_data: String of raw JPEG data.
     image_data_tensor: Input data layer in the graph.
-    decoded_image_tensor: Output of initial image resizing and preprocessing.
+    decoded_image_tensor: Output of initial image resizing and  preprocessing.
     resized_input_tensor: The input node of the recognition graph.
     bottleneck_tensor: Layer before the final softmax.
 
@@ -391,9 +391,9 @@ def get_or_create_bottleneck(sess, image_lists, label_name, index, image_dir,
     label_name: Label string we want to get an image for.
     index: Integer offset of the image we want. This will be modulo-ed by the
     available number of images for the label, so it can be arbitrarily large.
-    image_dir: Root folder string of the subfolders containing the training
+    image_dir: Root folder string  of the subfolders containing the training
     images.
-    category: Name string of which set to pull images from - training, testing,
+    category: Name string of which  set to pull images from - training, testing,
     or validation.
     bottleneck_dir: Folder string holding cached files of bottleneck values.
     jpeg_data_tensor: The tensor to feed loaded jpeg data into.
@@ -411,13 +411,17 @@ def get_or_create_bottleneck(sess, image_lists, label_name, index, image_dir,
   ensure_dir_exists(sub_dir_path)
   bottleneck_path = get_bottleneck_path(image_lists, label_name, index,
                                         bottleneck_dir, category, architecture)
+  '''                                      
   if not os.path.exists(bottleneck_path):
     create_bottleneck_file(bottleneck_path, image_lists, label_name, index,
                            image_dir, category, sess, jpeg_data_tensor,
                            decoded_image_tensor, resized_input_tensor,
                            bottleneck_tensor)
+  '''
   with open(bottleneck_path, 'r') as bottleneck_file:
     bottleneck_string = bottleneck_file.read()
+  bottleneck_values = [float(x) for x in bottleneck_string.split(',')]
+  '''
   did_hit_error = False
   try:
     bottleneck_values = [float(x) for x in bottleneck_string.split(',')]
@@ -434,6 +438,7 @@ def get_or_create_bottleneck(sess, image_lists, label_name, index, image_dir,
     # Allow exceptions to propagate here, since they shouldn't happen after a
     # fresh creation
     bottleneck_values = [float(x) for x in bottleneck_string.split(',')]
+  '''
   return bottleneck_values
 
 
@@ -470,11 +475,12 @@ def cache_bottlenecks(sess, image_lists, image_dir, bottleneck_dir,
     for category in ['training', 'testing', 'validation']:
       category_list = label_lists[category]
       for index, unused_base_name in enumerate(category_list):
+        '''
         get_or_create_bottleneck(
             sess, image_lists, label_name, index, image_dir, category,
             bottleneck_dir, jpeg_data_tensor, decoded_image_tensor,
             resized_input_tensor, bottleneck_tensor, architecture)
-
+        '''
         how_many_bottlenecks += 1
         if how_many_bottlenecks % 100 == 0:
           tf.logging.info(
@@ -969,7 +975,7 @@ def main(_):
   # See https://github.com/tensorflow/tensorflow/issues/3047
   tf.logging.set_verbosity(tf.logging.INFO)
 
-  # Prepare necessary directories that can be used during training
+  # Prepare necessary directories  that can be used during training
   prepare_file_system()
 
   # Gather information about the model architecture we'll be using.

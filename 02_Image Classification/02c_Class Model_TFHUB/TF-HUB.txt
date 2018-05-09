@@ -1,0 +1,8 @@
+Tf-Hub is new way of using Inception
+Just:
+    ```
+    sudo pip install tensorflow_hub
+    sudo pip install --upgrade tensorflow
+    ```
+
+Add replace the files in Class-Model

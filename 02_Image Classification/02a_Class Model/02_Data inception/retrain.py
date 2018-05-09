@@ -280,11 +280,14 @@ def get_bottleneck_path(image_lists, label_name, index, bottleneck_dir,
   Returns:
     File system path string to an image that meets the requested parameters.
   """
+  '''
   module_name = (module_name.replace('://', '~')  # URL scheme.
                  .replace('/', '~')  # URL and Unix paths.
                  .replace(':', '~').replace('\\', '~'))  # Windows paths.
+  '''
+  module_name = "inception_v3"
   return get_image_path(image_lists, label_name, index, bottleneck_dir,
-                        category) + '_' + module_name + '.txt'
+                        category) + '_' + "inception_v3" + '.txt'
 
 
 def create_module_graph(module_spec):
@@ -463,11 +466,12 @@ def cache_bottlenecks(sess, image_lists, image_dir, bottleneck_dir,
     for category in ['training', 'testing', 'validation']:
       category_list = label_lists[category]
       for index, unused_base_name in enumerate(category_list):
+        '''
         get_or_create_bottleneck(
             sess, image_lists, label_name, index, image_dir, category,
             bottleneck_dir, jpeg_data_tensor, decoded_image_tensor,
             resized_input_tensor, bottleneck_tensor, module_name)
-
+        '''
         how_many_bottlenecks += 1
         if how_many_bottlenecks % 100 == 0:
           tf.logging.info(

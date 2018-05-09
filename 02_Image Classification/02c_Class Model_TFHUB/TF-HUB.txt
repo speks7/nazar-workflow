@@ -5,4 +5,6 @@ Just:
     sudo pip install --upgrade tensorflow
     ```
 
-Add replace the files in Class-Model
+Add replace the files in Class-Model with same usage basis
+
+When training the model, add: --tfhub_module https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/1 for MobileNet V2

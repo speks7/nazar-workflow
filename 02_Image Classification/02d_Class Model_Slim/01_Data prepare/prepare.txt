@@ -1,0 +1,12 @@
+Take the images folder and seperate Put in data_prepare/pic/train and data_prepare/pic/validation
+
+Execute: 
+    ```
+    python data_convert.py -t images/ \
+    --train-shards 2 \
+    --validation-shards 2 \
+    --num-threads 2 \
+    --dataset-name satellite
+    ```
+
+    It generates the 4 tf-record files and 1 label file

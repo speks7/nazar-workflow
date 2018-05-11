@@ -10,3 +10,7 @@ Execute:
     ```
 
     It generates the 4 tf-record files and 1 label file
+
+Refer:
+https://github.com/ns2250225/python3_tf_slim_image_classify
+https://github.com/walton-wang929/Image_Classification

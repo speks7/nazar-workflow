@@ -8,6 +8,20 @@ Split into training and testing dataset:
     Once all the images were labelled, my next step was to split the dataset into a train and test dataset. 
     Inside the same directory where the images are, I created a directory named “train” and “test” and added around 70% of the images and their respective XML to the training directory and the remaining 30% to the test directory.
 
+    Object-Detection 
+        └ images
+            ├ train
+            └ test
+
+Labeling images:
+    You need to specify the object's bounding box and label in the image, but you can use LabelImg to create an xml file for each image.
+    
+    There  are other tools besides LabelImg .
+
+        * https://github.com/christopher5106/FastAnnotationTool
+
+        * http://imagemagick.org/script/index.php 
+
 Generate TFRECORD:
      Firstly, for the sake of simplicity, the data from both set of XML (training and testing), were converted into two CSV files
      Follow: https://gist.github.com/wbrickner/efedf8ab0ce1705de1372c1e2f49dd98
@@ -15,3 +29,42 @@ Generate TFRECORD:
      Then, using the CSV files, the tfrecord dataset is created using the script generate_tfrecord.py
      Follow: https://raw.githubusercontent.com/datitran/raccoon_dataset/master/generate_tfrecord.py
         Keep in mind that before running the script you have to specify the class of your objects in the function class_text_to_int
+
+ie for https://github.com/datitran/raccoon_dataset/blob/master/xml_to_csv.py
+    convert:
+        def main():
+            image_path = os.path.join(os.getcwd(), 'annotations')
+            xml_df = xml_to_csv(image_path)
+            xml_df.to_csv('raccoon_labels.csv', index=None)
+            print('Successfully converted xml to csv.')   
+
+    to:
+        def main():
+            for directory in ['train', 'test']:
+                image_path = os.path.join(os.getcwd(), 'images/{}'.format(directory))
+                xml_df = xml_to_csv(image_path)
+                xml_df.to_csv('data/{}_labels.csv'.format(directory), index=None)
+                print('Successfully converted xml to csv.')
+
+and for https://github.com/datitran/raccoon_dataset/blob/master/generate_tfrecord.py
+    convert:
+        # TO-DO replace this with label map
+        def class_text_to_int(row_label):
+            if row_label == 'raccoon':
+                return 1
+            else:
+                None
+    to:
+        # TO-DO replace this with label map
+        def class_text_to_int(row_label):
+            if row_label == 'fish':
+                return 1
+            else:
+                None
+
+
+You can then get the * .record file by running the following script:
+
+    $ python generate_tfrecord.py --csv_input=data/train_labels.csv --output_path=data/train.record 
+
+    $ python generate_tfrecord.py --csv_input=data/test_labels.csv --output_path=data/test.record

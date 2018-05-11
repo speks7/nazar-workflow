@@ -68,3 +68,6 @@ You can then get the * .record file by running the following script:
     $ python generate_tfrecord.py --csv_input=data/train_labels.csv --output_path=data/train.record 
 
     $ python generate_tfrecord.py --csv_input=data/test_labels.csv --output_path=data/test.record
+
+Refer:
+https://github.com/yonghankim/ship-detector

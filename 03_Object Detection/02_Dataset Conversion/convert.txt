@@ -1,0 +1,17 @@
+At this point you have selected a pre-trained model that you want to adapt to a new object detection task
+
+Now you need to know how you can convert the dataset into a TFRecord file so you can fine tune the model.
+
+Follow https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md if necessary
+
+Split into training and testing dataset:
+    Once all the images were labelled, my next step was to split the dataset into a train and test dataset. 
+    Inside the same directory where the images are, I created a directory named “train” and “test” and added around 70% of the images and their respective XML to the training directory and the remaining 30% to the test directory.
+
+Generate TFRECORD:
+     Firstly, for the sake of simplicity, the data from both set of XML (training and testing), were converted into two CSV files
+     Follow: https://gist.github.com/wbrickner/efedf8ab0ce1705de1372c1e2f49dd98
+
+     Then, using the CSV files, the tfrecord dataset is created using the script generate_tfrecord.py
+     Follow: https://raw.githubusercontent.com/datitran/raccoon_dataset/master/generate_tfrecord.py
+        Keep in mind that before running the script you have to specify the class of your objects in the function class_text_to_int

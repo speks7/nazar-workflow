@@ -1,0 +1,19 @@
+Goto https://github.com/tensorflow/tensorflow/tree/master/tensorflow/examples/android
+
+The README recommends keeping the build as its simplest, and it suggests to change the nativeBuildSystem variable of the Gradle build to none, however, I changed it to cmake to build it (none of the other building alternatives like Bazel and Makefile worked for me).
+
+When the build is finished, the next step is to add the frozen model to the assets directory.
+Then, also in that folder, create a file called “labels”, and in the first line write ??? (remember when I said the first class is reserved?), and in the second line write the label of your object (in my case I wrote Pikachu).
+
+Then, open the file named “DetectionActitivity.java” located in the “java” directory; this is the code used by the app to perform the detections.
+Look for the variable TF_OD_API_MODEL_FILE and TF_OD_API_LABELS_FILE and in the first one, change its value to the path of the frozen model located in the assets folder, and in the second one write the path of the file with the labels.
+Another useful variable you should know of is MINIMUM_CONFIDENCE_TF_OD_API which is the minimum confidence needed it to track a detection. Try to play around with it!
+
+Now we are ready! Click on the run button, select your Android device, and wait a couple of seconds until the app is installed on the phone.
+Important detail, not one, but four apps, will be installed on the phone, however, the one we that contains the detection model is TF Detect.
+If everything went fine, and the app launched, find some pictures of your object and see if the model is able to detect them.
+
+What solved the issue for me, was to modify, in the export.py file (called by export_inference_graph.py), the parameter optimize_graph to False. 
+
+Refer:
+https://github.com/juandes/pikachu-detection

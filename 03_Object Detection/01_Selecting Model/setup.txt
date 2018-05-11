@@ -1,0 +1,20 @@
+Refer to :
+https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md
+
+Tensorflow detection model zoo:
+
+We will be using ssd_inception_v2_coco:
+    http://download.tensorflow.org/models/object_detection/ssd_inception_v2_coco_2017_11_17.tar.gz
+    ```
+    tar -xzvf ssd_inception_v2_coco_2017_11_17.tar.gz
+    ```
+
+Inside the un-tar'ed directory, you will find:
+
+    a graph proto (graph.pbtxt)
+    a checkpoint (model.ckpt.data-00000-of-00001, model.ckpt.index, model.ckpt.meta)
+    a frozen graph proto with weights baked into the graph as constants (frozen_inference_graph.pb) to be used for out of the box inference (try this out in the Jupyter notebook!)
+    a config file (pipeline.config) which was used to generate the graph. These directly correspond to a config file in the samples/configs) directory but often with a modified score threshold. In the case of the heavier Faster R-CNN models, we also provide a version of the model that uses a highly reduced number of proposals for speed.
+
+Refer to:
+https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb

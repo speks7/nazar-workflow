@@ -1,0 +1,12 @@
+A “labels” map indicating the labels and their indexes is required. This is how they look.
+
+```
+item {
+  id: 1
+  name: 'Pikachu'
+}
+```
+    Replace the “Pikachu” label with yours, and important, always start with index 1 because 0 is reserved. I saved this file as object-detection.pbtxtin a new directory named “training”.
+
+Configuring the Object Detection Training Pipeline
+    Refer: https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/configuring_jobs.md

@@ -1,0 +1,432 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "3) Training_drive_CLI.ipynb",
+      "version": "0.3.2",
+      "views": {},
+      "default_view": {},
+      "provenance": [],
+      "collapsed_sections": []
+    },
+    "kernelspec": {
+      "name": "python2",
+      "display_name": "Python 2"
+    },
+    "accelerator": "GPU"
+  },
+  "cells": [
+    {
+      "metadata": {
+        "id": "IRhD20e44jSc",
+        "colab_type": "text"
+      },
+      "cell_type": "markdown",
+      "source": [
+        "# Running or Importing .py Files with Google Colab"
+      ]
+    },
+    {
+      "metadata": {
+        "id": "qB5iuC134W-c",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          },
+          "base_uri": "https://localhost:8080/",
+          "height": 567
+        },
+        "outputId": "14281530-2da1-4d91-be6b-f7288476bd55",
+        "executionInfo": {
+          "status": "error",
+          "timestamp": 1525422202542,
+          "user_tz": -345,
+          "elapsed": 32408,
+          "user": {
+            "displayName": "Sunim Acharya",
+            "photoUrl": "//lh6.googleusercontent.com/-LiJ-XpTmSI4/AAAAAAAAAAI/AAAAAAAAB38/FBvUjutV_vU/s50-c-k-no/photo.jpg",
+            "userId": "109432200723136539693"
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "!apt-get install -y -qq software-properties-common python-software-properties module-init-tools\n",
+        "!add-apt-repository -y ppa:alessandro-strada/ppa 2>&1 > /dev/null\n",
+        "!apt-get update -qq 2>&1 > /dev/null\n",
+        "!apt-get -y install -qq google-drive-ocamlfuse fuse\n",
+        "from google.colab import auth\n",
+        "auth.authenticate_user()\n",
+        "from oauth2client.client import GoogleCredentials\n",
+        "creds = GoogleCredentials.get_application_default()\n",
+        "import getpass\n",
+        "!google-drive-ocamlfuse -headless -id={creds.client_id} -secret={creds.client_secret} < /dev/null 2>&1 | grep URL\n",
+        "vcode = getpass.getpass()\n",
+        "!echo {vcode} | google-drive-ocamlfuse -headless -id={creds.client_id} -secret={creds.client_secret}"
+      ],
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "gpg: keybox '/tmp/tmpdld1e90t/pubring.gpg' created\n",
+            "gpg: /tmp/tmpdld1e90t/trustdb.gpg: trustdb created\n",
+            "gpg: key AD5F235DF639B041: public key \"Launchpad PPA for Alessandro Strada\" imported\n",
+            "gpg: Total number processed: 1\n",
+            "gpg:               imported: 1\n",
+            "Warning: apt-key output should not be parsed (stdout is not a terminal)\n"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "error",
+          "ename": "KeyboardInterrupt",
+          "evalue": "ignored",
+          "traceback": [
+            "\u001b[0;31m\u001b[0m",
+            "\u001b[0;31mKeyboardInterrupt\u001b[0mTraceback (most recent call last)",
+            "\u001b[0;32m<ipython-input-4-10e4f377fea7>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      9\u001b[0m \u001b[0;32mimport\u001b[0m \u001b[0mgetpass\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     10\u001b[0m \u001b[0mget_ipython\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msystem\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34mu'google-drive-ocamlfuse -headless -id={creds.client_id} -secret={creds.client_secret} < /dev/null 2>&1 | grep URL'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 11\u001b[0;31m \u001b[0mvcode\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mgetpass\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgetpass\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     12\u001b[0m \u001b[0mget_ipython\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msystem\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34mu'echo {vcode} | google-drive-ocamlfuse -headless -id={creds.client_id} -secret={creds.client_secret}'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python2.7/dist-packages/ipykernel/kernelbase.pyc\u001b[0m in \u001b[0;36mgetpass\u001b[0;34m(self, prompt, stream)\u001b[0m\n\u001b[1;32m    686\u001b[0m             \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_parent_ident\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    687\u001b[0m             \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_parent_header\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 688\u001b[0;31m             \u001b[0mpassword\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mTrue\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    689\u001b[0m         )\n\u001b[1;32m    690\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python2.7/dist-packages/ipykernel/kernelbase.pyc\u001b[0m in \u001b[0;36m_input_request\u001b[0;34m(self, prompt, ident, parent, password)\u001b[0m\n\u001b[1;32m    733\u001b[0m             \u001b[0;32mexcept\u001b[0m \u001b[0mKeyboardInterrupt\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    734\u001b[0m                 \u001b[0;31m# re-raise KeyboardInterrupt, to truncate traceback\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 735\u001b[0;31m                 \u001b[0;32mraise\u001b[0m \u001b[0mKeyboardInterrupt\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    736\u001b[0m             \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    737\u001b[0m                 \u001b[0;32mbreak\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mKeyboardInterrupt\u001b[0m: "
+          ]
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "id": "dRowexUN41co",
+        "colab_type": "text"
+      },
+      "cell_type": "markdown",
+      "source": [
+        "# Mount your Google Drive:"
+      ]
+    },
+    {
+      "metadata": {
+        "id": "zYFTCfRU42aU",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "!mkdir -p drive\n",
+        "!google-drive-ocamlfuse drive"
+      ],
+      "execution_count": 0,
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "id": "TfbA6dtS5-lU",
+        "colab_type": "text"
+      },
+      "cell_type": "markdown",
+      "source": [
+        "# Enable GPU"
+      ]
+    },
+    {
+      "metadata": {
+        "id": "tdQjj9Il5_WE",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          },
+          "base_uri": "https://localhost:8080/",
+          "height": 278
+        },
+        "outputId": "8b1a4f2c-babd-452b-9a5a-c598ba313e9d",
+        "executionInfo": {
+          "status": "ok",
+          "timestamp": 1525422166932,
+          "user_tz": -345,
+          "elapsed": 1558,
+          "user": {
+            "displayName": "Sunim Acharya",
+            "photoUrl": "//lh6.googleusercontent.com/-LiJ-XpTmSI4/AAAAAAAAAAI/AAAAAAAAB38/FBvUjutV_vU/s50-c-k-no/photo.jpg",
+            "userId": "109432200723136539693"
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "from tensorflow.python.client import device_lib\n",
+        "device_lib.list_local_devices()"
+      ],
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "[name: \"/device:CPU:0\"\n",
+              " device_type: \"CPU\"\n",
+              " memory_limit: 268435456\n",
+              " locality {\n",
+              " }\n",
+              " incarnation: 10559557331743937293, name: \"/device:GPU:0\"\n",
+              " device_type: \"GPU\"\n",
+              " memory_limit: 255197184\n",
+              " locality {\n",
+              "   bus_id: 1\n",
+              "   links {\n",
+              "   }\n",
+              " }\n",
+              " incarnation: 3610440207803470297\n",
+              " physical_device_desc: \"device: 0, name: Tesla K80, pci bus id: 0000:00:04.0, compute capability: 3.7\"]"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 3
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "id": "4oHWQr2Uz5Lp",
+        "colab_type": "text"
+      },
+      "cell_type": "markdown",
+      "source": [
+        "# Full Model Training"
+      ]
+    },
+    {
+      "metadata": {
+        "id": "qz6FMuysz1KQ",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          },
+          "base_uri": "https://localhost:8080/",
+          "height": 34
+        },
+        "outputId": "4a0e729e-b92f-435b-dcd8-691b2a9c532d",
+        "executionInfo": {
+          "status": "ok",
+          "timestamp": 1525347846845,
+          "user_tz": -345,
+          "elapsed": 2884,
+          "user": {
+            "displayName": "Sunim Acharya",
+            "photoUrl": "//lh6.googleusercontent.com/-LiJ-XpTmSI4/AAAAAAAAAAI/AAAAAAAAB38/FBvUjutV_vU/s50-c-k-no/photo.jpg",
+            "userId": "109432200723136539693"
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "cd drive/Nazar/class-label"
+      ],
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "/content/drive/Nazar/class-label\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "id": "STNOYQH30QQW",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "! chmod +x retrain.sh"
+      ],
+      "execution_count": 0,
+      "outputs": []
+    },
+    {
+      "metadata": {
+        "id": "Tus9pk550XK2",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          },
+          "base_uri": "https://localhost:8080/",
+          "height": 493
+        },
+        "outputId": "585df380-abf2-44b8-e749-a5f973ebc3e9",
+        "executionInfo": {
+          "status": "ok",
+          "timestamp": 1525347917883,
+          "user_tz": -345,
+          "elapsed": 27881,
+          "user": {
+            "displayName": "Sunim Acharya",
+            "photoUrl": "//lh6.googleusercontent.com/-LiJ-XpTmSI4/AAAAAAAAAAI/AAAAAAAAB38/FBvUjutV_vU/s50-c-k-no/photo.jpg",
+            "userId": "109432200723136539693"
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "!pip install --upgrade tensorflow"
+      ],
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Collecting tensorflow\n",
+            "\u001b[?25l  Downloading https://files.pythonhosted.org/packages/22/c6/d08f7c549330c2acc1b18b5c1f0f8d9d2af92f54d56861f331f372731671/tensorflow-1.8.0-cp36-cp36m-manylinux1_x86_64.whl (49.1MB)\n",
+            "\u001b[K    100% |████████████████████████████████| 49.1MB 1.1MB/s \n",
+            "\u001b[?25hRequirement not upgraded as not directly required: termcolor>=1.1.0 in /usr/local/lib/python3.6/dist-packages (from tensorflow) (1.1.0)\n",
+            "Requirement not upgraded as not directly required: protobuf>=3.4.0 in /usr/local/lib/python3.6/dist-packages (from tensorflow) (3.5.2.post1)\n",
+            "Requirement not upgraded as not directly required: astor>=0.6.0 in /usr/local/lib/python3.6/dist-packages (from tensorflow) (0.6.2)\n",
+            "Requirement not upgraded as not directly required: grpcio>=1.8.6 in /usr/local/lib/python3.6/dist-packages (from tensorflow) (1.11.0)\n",
+            "Requirement not upgraded as not directly required: gast>=0.2.0 in /usr/local/lib/python3.6/dist-packages (from tensorflow) (0.2.0)\n",
+            "Requirement not upgraded as not directly required: absl-py>=0.1.6 in /usr/local/lib/python3.6/dist-packages (from tensorflow) (0.2.0)\n",
+            "Requirement not upgraded as not directly required: wheel>=0.26 in /usr/local/lib/python3.6/dist-packages (from tensorflow) (0.31.0)\n",
+            "Collecting tensorboard<1.9.0,>=1.8.0 (from tensorflow)\n",
+            "\u001b[?25l  Downloading https://files.pythonhosted.org/packages/59/a6/0ae6092b7542cfedba6b2a1c9b8dceaf278238c39484f3ba03b03f07803c/tensorboard-1.8.0-py3-none-any.whl (3.1MB)\n",
+            "\u001b[K    100% |████████████████████████████████| 3.1MB 13.3MB/s \n",
+            "\u001b[?25hRequirement not upgraded as not directly required: numpy>=1.13.3 in /usr/local/lib/python3.6/dist-packages (from tensorflow) (1.14.3)\n",
+            "Requirement not upgraded as not directly required: six>=1.10.0 in /usr/local/lib/python3.6/dist-packages (from tensorflow) (1.11.0)\n",
+            "Requirement not upgraded as not directly required: setuptools in /usr/local/lib/python3.6/dist-packages (from protobuf>=3.4.0->tensorflow) (39.1.0)\n",
+            "Requirement not upgraded as not directly required: bleach==1.5.0 in /usr/local/lib/python3.6/dist-packages (from tensorboard<1.9.0,>=1.8.0->tensorflow) (1.5.0)\n",
+            "Requirement not upgraded as not directly required: werkzeug>=0.11.10 in /usr/local/lib/python3.6/dist-packages (from tensorboard<1.9.0,>=1.8.0->tensorflow) (0.14.1)\n",
+            "Requirement not upgraded as not directly required: markdown>=2.6.8 in /usr/local/lib/python3.6/dist-packages (from tensorboard<1.9.0,>=1.8.0->tensorflow) (2.6.11)\n",
+            "Requirement not upgraded as not directly required: html5lib==0.9999999 in /usr/local/lib/python3.6/dist-packages (from tensorboard<1.9.0,>=1.8.0->tensorflow) (0.9999999)\n",
+            "Installing collected packages: tensorboard, tensorflow\n",
+            "  Found existing installation: tensorboard 1.7.0\n",
+            "    Uninstalling tensorboard-1.7.0:\n",
+            "      Successfully uninstalled tensorboard-1.7.0\n",
+            "  Found existing installation: tensorflow 1.7.0\n",
+            "    Uninstalling tensorflow-1.7.0:\n",
+            "      Successfully uninstalled tensorflow-1.7.0\n",
+            "Successfully installed tensorboard-1.8.0 tensorflow-1.8.0\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "id": "KpErYEaf0gOw",
+        "colab_type": "code",
+        "colab": {
+          "autoexec": {
+            "startup": false,
+            "wait_interval": 0
+          },
+          "base_uri": "https://localhost:8080/",
+          "height": 802
+        },
+        "outputId": "c7f4eb36-734b-47fc-d31f-0b6414761711",
+        "executionInfo": {
+          "status": "ok",
+          "timestamp": 1525348409975,
+          "user_tz": -345,
+          "elapsed": 492079,
+          "user": {
+            "displayName": "Sunim Acharya",
+            "photoUrl": "//lh6.googleusercontent.com/-LiJ-XpTmSI4/AAAAAAAAAAI/AAAAAAAAB38/FBvUjutV_vU/s50-c-k-no/photo.jpg",
+            "userId": "109432200723136539693"
+          }
+        }
+      },
+      "cell_type": "code",
+      "source": [
+        "! ./retrain.sh"
+      ],
+      "execution_count": 8,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "/usr/local/lib/python3.6/dist-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.\r\n",
+            "  from ._conv import register_converters as _register_converters\n",
+            ">> Downloading inception-2015-12-05.tgz 8.8%"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            ">> Downloading inception-2015-12-05.tgz 100.0%"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "\r>> Downloading inception-2015-12-05.tgz 100.0%\r\n",
+            "--- Logging error ---\r\n",
+            "Traceback (most recent call last):\r\n",
+            "  File \"/usr/lib/python3.6/logging/__init__.py\", line 992, in emit\r\n",
+            "    msg = self.format(record)\r\n",
+            "  File \"/usr/lib/python3.6/logging/__init__.py\", line 838, in format\r\n",
+            "    return fmt.format(record)\r\n",
+            "  File \"/usr/lib/python3.6/logging/__init__.py\", line 575, in format\r\n",
+            "    record.message = record.getMessage()\r\n",
+            "  File \"/usr/lib/python3.6/logging/__init__.py\", line 338, in getMessage\r\n",
+            "    msg = msg % self.args\r\n",
+            "TypeError: not all arguments converted during string formatting\r\n",
+            "Call stack:\r\n",
+            "  File \"retrain.py\", line 1326, in <module>\r\n",
+            "    tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)\r\n",
+            "  File \"/usr/local/lib/python3.6/dist-packages/tensorflow/python/platform/app.py\", line 126, in run\r\n",
+            "    _sys.exit(main(argv))\r\n",
+            "  File \"retrain.py\", line 982, in main\r\n",
+            "    maybe_download_and_extract(model_info['data_url'])\r\n",
+            "  File \"retrain.py\", line 339, in maybe_download_and_extract\r\n",
+            "    'bytes.')\r\n",
+            "  File \"/usr/local/lib/python3.6/dist-packages/tensorflow/python/platform/tf_logging.py\", line 116, in info\r\n",
+            "    _get_logger().info(msg, *args, **kwargs)\r\n",
+            "Message: 'Successfully downloaded'\r\n",
+            "Arguments: ('inception-2015-12-05.tgz', 88931400, 'bytes.')\n",
+            "2018-05-03 11:50:19.806399: W tensorflow/core/framework/op_def_util.cc:346] Op BatchNormWithGlobalNormalization is deprecated. It will cease to work in GraphDef version 9. Use tf.nn.batch_normalization().\n",
+            "INFO:tensorflow:Looking for images in 'conductor'\n",
+            "WARNING:tensorflow:No files found\n",
+            "INFO:tensorflow:Looking for images in 'Electric-bypass-shunt'\n",
+            "Traceback (most recent call last):\n",
+            "  File \"retrain.py\", line 1326, in <module>\n",
+            "    tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)\n",
+            "  File \"/usr/local/lib/python3.6/dist-packages/tensorflow/python/platform/app.py\", line 126, in run\n",
+            "    _sys.exit(main(argv))\n",
+            "  File \"retrain.py\", line 988, in main\n",
+            "    FLAGS.validation_percentage)\n",
+            "  File \"retrain.py\", line 159, in create_image_lists\n",
+            "    file_list.extend(gfile.Glob(file_glob))\n",
+            "  File \"/usr/local/lib/python3.6/dist-packages/tensorflow/python/lib/io/file_io.py\", line 337, in get_matching_files\n",
+            "    for single_filename in filename\n",
+            "  File \"/usr/local/lib/python3.6/dist-packages/tensorflow/python/framework/errors_impl.py\", line 519, in __exit__\n",
+            "    c_api.TF_GetCode(self.status.status))\n",
+            "tensorflow.python.framework.errors_impl.NotFoundError: images/Electric-bypass-shunt; No such file or directory\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    }
+  ]
+}

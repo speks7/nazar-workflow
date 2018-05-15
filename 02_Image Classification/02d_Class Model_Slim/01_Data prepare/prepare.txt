@@ -17,3 +17,4 @@ Execute:
 Refer:
 https://github.com/ns2250225/python3_tf_slim_image_classify
 https://github.com/walton-wang929/Image_Classification
+https://github.com/cmusatyalab/openface/blob/master/util/create-train-val-split.py

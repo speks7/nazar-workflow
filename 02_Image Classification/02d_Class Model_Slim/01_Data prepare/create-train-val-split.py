@@ -65,7 +65,7 @@ def createTrainValSplit(imageDir, valRatio):
     print(trainImgs)
     print("+ Training set size: '{}'.".format(len(trainImgs)))
     print("+ Validation set size: '{}'.".format(len(valImgs)))
-
+    '''
     for person, img in trainImgs:
         origPath = os.path.join(imageDir, person, img)
         newDir = os.path.join(imageDir, 'train', person)
@@ -75,7 +75,7 @@ def createTrainValSplit(imageDir, valRatio):
             shutil.move(origPath, newPath)
         except:
             continue
-
+    '''
     for person, img in valImgs:
         origPath = os.path.join(imageDir, person, img)
         newDir = os.path.join(imageDir, 'val', person)

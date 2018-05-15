@@ -44,8 +44,8 @@ slim = tf.contrib.slim
 _FILE_PATTERN = '%s-*'
 
 _SPLITS_TO_SIZES = {
-    'train': 1281167,
-    'validation': 50000,
+    'train': 20810,
+    'validation': 5285,
 }
 
 _ITEMS_TO_DESCRIPTIONS = {
@@ -56,7 +56,7 @@ _ITEMS_TO_DESCRIPTIONS = {
     'object/label': 'A list of labels, one per each object.',
 }
 
-_NUM_CLASSES = 1001
+_NUM_CLASSES = 57
 
 
 def create_readable_names_for_imagenet_labels():

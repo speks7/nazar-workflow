@@ -1,4 +1,7 @@
-Take the images folder and seperate Put in data_prepare/pic/train and data_prepare/pic/validation
+Take the images folder and seperate Put in data_prepare/pic/train and data_prepare/pic/validation by:
+    ```
+    python python create-train-val-split.py images --valRatio 0.2
+    ```
 
 Execute: 
     ```

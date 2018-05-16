@@ -14,4 +14,5 @@ python train_image_classifier.py \
     --save_interval_secs=300 \
     --save_summaries_secs=2 \
     --log_every_n_steps=10 \
-    --weight_decay=0.00004
+    --weight_decay=0.00004 \
+    --train_image_size=224 \

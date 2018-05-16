@@ -3,10 +3,10 @@ python train_image_classifier.py \
     --dataset_name=imagenet \
     --dataset_split_name=train \
     --dataset_dir=imagenet/data \
-    --model_name=mobilenet_v1 \
+    --model_name=mobilenet_v2 \
     --checkpoint_path=imagenet/pretrained/mobilenet_v2_1.4_224.ckpt \
-    --checkpoint_exclude_scopes=MobilenetV2/Logits,MobilenetV2/AuxLogits \
-    --trainable_scopes=MobilenetV2/Logits,MobilenetV2/AuxLogits \
+    --checkpoint_exclude_scopes=MobilenetV2/Logits,MobilenetV2/Predictions,MobilenetV2/predics \
+    --trainable_scopes=MobilenetV2/Logits,MobilenetV2/Predictions,MobilenetV2/predics \
     --max_number_of_steps=100 \
     --batch_size=32 \
     --learning_rate=0.001 \

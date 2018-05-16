@@ -1,6 +1,8 @@
 
 # Created by https://www.gitignore.io/api/python,jupyternotebook,visualstudiocode
 
+02_Image Classification/02d_Class Model_Slim/02_ Data\ Retrain/slim/imagenet/
+
 ### JupyterNotebook ###
 .ipynb_checkpoints
 */.ipynb_checkpoints/*

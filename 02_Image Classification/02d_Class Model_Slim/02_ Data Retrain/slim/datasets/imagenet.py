@@ -44,8 +44,8 @@ slim = tf.contrib.slim
 _FILE_PATTERN = '%s-*'
 
 _SPLITS_TO_SIZES = {
-    'train': 20810,
-    'validation': 5285,
+    'train': 20564,
+    'validation': 5224,
 }
 
 _ITEMS_TO_DESCRIPTIONS = {
@@ -56,7 +56,7 @@ _ITEMS_TO_DESCRIPTIONS = {
     'object/label': 'A list of labels, one per each object.',
 }
 
-_NUM_CLASSES = 57
+_NUM_CLASSES = 55
 
 
 def create_readable_names_for_imagenet_labels():
@@ -79,7 +79,7 @@ def create_readable_names_for_imagenet_labels():
   (since 0 is reserved for the background class).
 
   Code is based on
-  https://github.com/tensorflow/models/blob/master/research/inception/inception/data/build_imagenet_data.py#L463
+  https://github.com/tensorflow/models/blob/master/inception/inception/data/build_imagenet_data.py#L463
   """
 
   # pylint: disable=g-line-too-long

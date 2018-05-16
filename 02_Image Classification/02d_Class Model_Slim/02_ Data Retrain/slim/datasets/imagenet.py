@@ -41,7 +41,7 @@ from datasets import dataset_utils
 slim = tf.contrib.slim
 
 # TODO(nsilberman): Add tfrecord file type once the script is updated.
-_FILE_PATTERN = '%s-*'
+_FILE_PATTERN = 'imagenet_%s_*.tfrecord'
 
 _SPLITS_TO_SIZES = {
     'train': 20564,
@@ -147,7 +147,7 @@ def get_split(split_name, dataset_dir, file_pattern=None, reader=None):
       'image/encoded': tf.FixedLenFeature(
           (), tf.string, default_value=''),
       'image/format': tf.FixedLenFeature(
-          (), tf.string, default_value='jpeg'),
+          (), tf.string, default_value='jpg'),
       'image/class/label': tf.FixedLenFeature(
           [], dtype=tf.int64, default_value=-1),
       'image/class/text': tf.FixedLenFeature(

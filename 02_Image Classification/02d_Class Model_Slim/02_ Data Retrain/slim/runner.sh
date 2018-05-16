@@ -1,0 +1,17 @@
+python train_image_classifier.py \
+    --train_dir=imagenet/train_dir \
+    --dataset_name=imagenet \
+    --dataset_split_name=train \
+    --dataset_dir=imagenet/data \
+    --model_name=mobilenet_v1 \
+    --checkpoint_path=imagenet/pretrained/mobilenet_v2_1.4_224.ckpt \
+    --checkpoint_exclude_scopes=MobilenetV2/Logits,MobilenetV2/AuxLogits \
+    --trainable_scopes=MobilenetV2/Logits,MobilenetV2/AuxLogits \
+    --max_number_of_steps=100 \
+    --batch_size=32 \
+    --learning_rate=0.001 \
+    --learning_rate_decay_type=fixed \
+    --save_interval_secs=300 \
+    --save_summaries_secs=2 \
+    --log_every_n_steps=10 \
+    --weight_decay=0.00004

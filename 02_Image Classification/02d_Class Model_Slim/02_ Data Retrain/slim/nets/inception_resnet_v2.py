@@ -45,12 +45,7 @@ def block35(net, scale=1.0, activation_fn=tf.nn.relu, scope=None, reuse=None):
     mixed = tf.concat(axis=3, values=[tower_conv, tower_conv1_1, tower_conv2_2])
     up = slim.conv2d(mixed, net.get_shape()[3], 1, normalizer_fn=None,
                      activation_fn=None, scope='Conv2d_1x1')
-    scaled_up = up * scale
-    if activation_fn == tf.nn.relu6:
-      # Use clip_by_value to simulate bandpass activation.
-      scaled_up = tf.clip_by_value(scaled_up, -6.0, 6.0)
-
-    net += scaled_up
+    net += scale * up
     if activation_fn:
       net = activation_fn(net)
   return net
@@ -70,13 +65,7 @@ def block17(net, scale=1.0, activation_fn=tf.nn.relu, scope=None, reuse=None):
     mixed = tf.concat(axis=3, values=[tower_conv, tower_conv1_2])
     up = slim.conv2d(mixed, net.get_shape()[3], 1, normalizer_fn=None,
                      activation_fn=None, scope='Conv2d_1x1')
-
-    scaled_up = up * scale
-    if activation_fn == tf.nn.relu6:
-      # Use clip_by_value to simulate bandpass activation.
-      scaled_up = tf.clip_by_value(scaled_up, -6.0, 6.0)
-
-    net += scaled_up
+    net += scale * up
     if activation_fn:
       net = activation_fn(net)
   return net
@@ -96,13 +85,7 @@ def block8(net, scale=1.0, activation_fn=tf.nn.relu, scope=None, reuse=None):
     mixed = tf.concat(axis=3, values=[tower_conv, tower_conv1_2])
     up = slim.conv2d(mixed, net.get_shape()[3], 1, normalizer_fn=None,
                      activation_fn=None, scope='Conv2d_1x1')
-
-    scaled_up = up * scale
-    if activation_fn == tf.nn.relu6:
-      # Use clip_by_value to simulate bandpass activation.
-      scaled_up = tf.clip_by_value(scaled_up, -6.0, 6.0)
-
-    net += scaled_up
+    net += scale * up
     if activation_fn:
       net = activation_fn(net)
   return net
@@ -112,8 +95,7 @@ def inception_resnet_v2_base(inputs,
                              final_endpoint='Conv2d_7b_1x1',
                              output_stride=16,
                              align_feature_maps=False,
-                             scope=None,
-                             activation_fn=tf.nn.relu):
+                             scope=None):
   """Inception model from  http://arxiv.org/abs/1602.07261.
 
   Constructs an Inception Resnet v2 network from inputs to the given final
@@ -131,7 +113,6 @@ def inception_resnet_v2_base(inputs,
     align_feature_maps: When true, changes all the VALID paddings in the network
       to SAME padding so that the feature maps are aligned.
     scope: Optional variable_scope.
-    activation_fn: Activation function for block scopes.
 
   Returns:
     tensor_out: output tensor corresponding to the final_endpoint.
@@ -210,8 +191,7 @@ def inception_resnet_v2_base(inputs,
 
       if add_and_check_final('Mixed_5b', net): return net, end_points
       # TODO(alemi): Register intermediate endpoints
-      net = slim.repeat(net, 10, block35, scale=0.17,
-                        activation_fn=activation_fn)
+      net = slim.repeat(net, 10, block35, scale=0.17)
 
       # 17 x 17 x 1088 if output_stride == 8,
       # 33 x 33 x 1088 if output_stride == 16
@@ -240,8 +220,7 @@ def inception_resnet_v2_base(inputs,
 
       # TODO(alemi): register intermediate endpoints
       with slim.arg_scope([slim.conv2d], rate=2 if use_atrous else 1):
-        net = slim.repeat(net, 20, block17, scale=0.10,
-                          activation_fn=activation_fn)
+        net = slim.repeat(net, 20, block17, scale=0.10)
       if add_and_check_final('PreAuxLogits', net): return net, end_points
 
       if output_stride == 8:
@@ -278,7 +257,7 @@ def inception_resnet_v2_base(inputs,
       if add_and_check_final('Mixed_7a', net): return net, end_points
 
       # TODO(alemi): register intermediate endpoints
-      net = slim.repeat(net, 9, block8, scale=0.20, activation_fn=activation_fn)
+      net = slim.repeat(net, 9, block8, scale=0.20)
       net = block8(net, activation_fn=None)
 
       # 8 x 8 x 1536
@@ -292,42 +271,33 @@ def inception_resnet_v2(inputs, num_classes=1001, is_training=True,
                         dropout_keep_prob=0.8,
                         reuse=None,
                         scope='InceptionResnetV2',
-                        create_aux_logits=True,
-                        activation_fn=tf.nn.relu):
+                        create_aux_logits=True):
   """Creates the Inception Resnet V2 model.
 
   Args:
     inputs: a 4-D tensor of size [batch_size, height, width, 3].
-      Dimension batch_size may be undefined. If create_aux_logits is false,
-      also height and width may be undefined.
-    num_classes: number of predicted classes. If 0 or None, the logits layer
-      is omitted and the input features to the logits layer (before  dropout)
-      are returned instead.
+    num_classes: number of predicted classes.
     is_training: whether is training or not.
     dropout_keep_prob: float, the fraction to keep before final layer.
     reuse: whether or not the network and its variables should be reused. To be
       able to reuse 'scope' must be given.
     scope: Optional variable_scope.
     create_aux_logits: Whether to include the auxilliary logits.
-    activation_fn: Activation function for conv2d.
 
   Returns:
-    net: the output of the logits layer (if num_classes is a non-zero integer),
-      or the non-dropped-out input to the logits layer (if num_classes is 0 or
-      None).
+    logits: the logits outputs of the model.
     end_points: the set of end_points from the inception model.
   """
   end_points = {}
 
-  with tf.variable_scope(scope, 'InceptionResnetV2', [inputs],
+  with tf.variable_scope(scope, 'InceptionResnetV2', [inputs, num_classes],
                          reuse=reuse) as scope:
     with slim.arg_scope([slim.batch_norm, slim.dropout],
                         is_training=is_training):
 
-      net, end_points = inception_resnet_v2_base(inputs, scope=scope,
-                                                 activation_fn=activation_fn)
+      net, end_points = inception_resnet_v2_base(inputs, scope=scope)
 
-      if create_aux_logits and num_classes:
+      if create_aux_logits:
         with tf.variable_scope('AuxLogits'):
           aux = end_points['PreAuxLogits']
           aux = slim.avg_pool2d(aux, 5, stride=3, padding='VALID',
@@ -341,20 +311,13 @@ def inception_resnet_v2(inputs, num_classes=1001, is_training=True,
           end_points['AuxLogits'] = aux
 
       with tf.variable_scope('Logits'):
-        # TODO(sguada,arnoegw): Consider adding a parameter global_pool which
-        # can be set to False to disable pooling here (as in resnet_*()).
-        kernel_size = net.get_shape()[1:3]
-        if kernel_size.is_fully_defined():
-          net = slim.avg_pool2d(net, kernel_size, padding='VALID',
-                                scope='AvgPool_1a_8x8')
-        else:
-          net = tf.reduce_mean(net, [1, 2], keep_dims=True, name='global_pool')
-        end_points['global_pool'] = net
-        if not num_classes:
-          return net, end_points
+        net = slim.avg_pool2d(net, net.get_shape()[1:3], padding='VALID',
+                              scope='AvgPool_1a_8x8')
         net = slim.flatten(net)
+
         net = slim.dropout(net, dropout_keep_prob, is_training=is_training,
                            scope='Dropout')
+
         end_points['PreLogitsFlatten'] = net
         logits = slim.fully_connected(net, num_classes, activation_fn=None,
                                       scope='Logits')
@@ -367,15 +330,13 @@ inception_resnet_v2.default_image_size = 299
 
 def inception_resnet_v2_arg_scope(weight_decay=0.00004,
                                   batch_norm_decay=0.9997,
-                                  batch_norm_epsilon=0.001,
-                                  activation_fn=tf.nn.relu):
-  """Returns the scope with the default parameters for inception_resnet_v2.
+                                  batch_norm_epsilon=0.001):
+  """Yields the scope with the default parameters for inception_resnet_v2.
 
   Args:
     weight_decay: the weight decay for weights variables.
     batch_norm_decay: decay for the moving average of batch_norm momentums.
     batch_norm_epsilon: small float added to variance to avoid dividing by zero.
-    activation_fn: Activation function for conv2d.
 
   Returns:
     a arg_scope with the parameters needed for inception_resnet_v2.
@@ -388,10 +349,9 @@ def inception_resnet_v2_arg_scope(weight_decay=0.00004,
     batch_norm_params = {
         'decay': batch_norm_decay,
         'epsilon': batch_norm_epsilon,
-        'fused': None,  # Use fused batch norm if possible.
     }
     # Set activation_fn and parameters for batch_norm.
-    with slim.arg_scope([slim.conv2d], activation_fn=activation_fn,
+    with slim.arg_scope([slim.conv2d], activation_fn=tf.nn.relu,
                         normalizer_fn=slim.batch_norm,
                         normalizer_params=batch_norm_params) as scope:
       return scope

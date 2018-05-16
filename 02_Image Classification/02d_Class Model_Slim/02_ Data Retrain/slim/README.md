@@ -1,4 +1,4 @@
-# TensorFlow-Slim image classification model library
+# TensorFlow-Slim image classification library
 
 [TF-slim](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/contrib/slim)
 is a new lightweight high-level API of TensorFlow (`tensorflow.contrib.slim`)
@@ -13,9 +13,8 @@ converting them
 to TensorFlow's native TFRecord format and reading them in using TF-Slim's
 data reading and queueing utilities. You can easily train any model on any of
 these datasets, as we demonstrate below. We've also included a
-[jupyter notebook](https://github.com/tensorflow/models/blob/master/research/slim/slim_walkthrough.ipynb),
+[jupyter notebook](https://github.com/tensorflow/models/blob/master/slim/slim_walkthrough.ipynb),
 which provides working examples of how to use TF-Slim for image classification.
-For developing or modifying your own models, see also the [main TF-Slim page](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/contrib/slim).
 
 ## Contacts
 
@@ -55,7 +54,7 @@ python -c "import tensorflow.contrib.slim as slim; eval = slim.evaluation.evalua
 ## Installing the TF-slim image models library
 
 To use TF-Slim for image classification, you also have to install
-the [TF-Slim image models library](https://github.com/tensorflow/models/tree/master/research/slim),
+the [TF-Slim image models library](https://github.com/tensorflow/models/tree/master/slim),
 which is not part of the core TF library.
 To do this, check out the
 [tensorflow/models](https://github.com/tensorflow/models/) repository as follows:
@@ -65,16 +64,16 @@ cd $HOME/workspace
 git clone https://github.com/tensorflow/models/
 ```
 
-This will put the TF-Slim image models library in `$HOME/workspace/models/research/slim`.
+This will put the TF-Slim image models library in `$HOME/workspace/models/slim`.
 (It will also create a directory called
-[models/inception](https://github.com/tensorflow/models/tree/master/research/inception),
+[models/inception](https://github.com/tensorflow/models/tree/master/inception),
 which contains an older version of slim; you can safely ignore this.)
 
 To verify that this has worked, execute the following commands; it should run
 without raising any errors.
 
 ```
-cd $HOME/workspace/models/research/slim
+cd $HOME/workspace/models/slim
 python -c "from nets import cifarnet; mynet = cifarnet.cifarnet"
 ```
 
@@ -127,7 +126,7 @@ from integer labels to class names.
 
 You can use the same script to create the mnist and cifar10 datasets.
 However, for ImageNet, you have to follow the instructions
-[here](https://github.com/tensorflow/models/blob/master/research/inception/README.md#getting-started).
+[here](https://github.com/tensorflow/models/blob/master/inception/README.md#getting-started).
 Note that you first have to sign up for an account at image-net.org.
 Also, the download can take several hours, and could use up to 500GB.
 
@@ -140,11 +139,11 @@ which stores pointers to the data file, as well as various other pieces of
 metadata, such as the class labels, the train/test split, and how to parse the
 TFExample protos. We have included the TF-Slim Dataset descriptors
 for
-[Cifar10](https://github.com/tensorflow/models/blob/master/research/slim/datasets/cifar10.py),
-[ImageNet](https://github.com/tensorflow/models/blob/master/research/slim/datasets/imagenet.py),
-[Flowers](https://github.com/tensorflow/models/blob/master/research/slim/datasets/flowers.py),
+[Cifar10](https://github.com/tensorflow/models/blob/master/slim/datasets/cifar10.py),
+[ImageNet](https://github.com/tensorflow/models/blob/master/slim/datasets/imagenet.py),
+[Flowers](https://github.com/tensorflow/models/blob/master/slim/datasets/flowers.py),
 and
-[MNIST](https://github.com/tensorflow/models/blob/master/research/slim/datasets/mnist.py).
+[MNIST](https://github.com/tensorflow/models/blob/master/slim/datasets/mnist.py).
 An example of how to load data using a TF-Slim dataset descriptor using a
 TF-Slim
 [DatasetDataProvider](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/contrib/slim/python/slim/data/dataset_data_provider.py)
@@ -164,56 +163,7 @@ dataset = flowers.get_split('validation', DATA_DIR)
 provider = slim.dataset_data_provider.DatasetDataProvider(dataset)
 [image, label] = provider.get(['image', 'label'])
 ```
-## An automated script for processing ImageNet data.
 
-Training a model with the ImageNet dataset is a common request. To facilitate
-working with the ImageNet dataset, we provide an automated script for
-downloading and processing the ImageNet dataset into the native TFRecord
-format.
-
-The TFRecord format consists of a set of sharded files where each entry is a serialized `tf.Example` proto. Each `tf.Example` proto contains the ImageNet image (JPEG encoded) as well as metadata such as label and bounding box information.
-
-We provide a single [script](datasets/download_and_preprocess_imagenet.sh) for
-downloading and converting ImageNet data to TFRecord format. Downloading and
-preprocessing the data may take several hours (up to half a day) depending on
-your network and computer speed. Please be patient.
-
-To begin, you will need to sign up for an account with [ImageNet]
-(http://image-net.org) to gain access to the data. Look for the sign up page,
-create an account and request an access key to download the data.
-
-After you have `USERNAME` and `PASSWORD`, you are ready to run our script. Make
-sure that your hard disk has at least 500 GB of free space for downloading and
-storing the data. Here we select `DATA_DIR=$HOME/imagenet-data` as such a
-location but feel free to edit accordingly.
-
-When you run the below script, please enter *USERNAME* and *PASSWORD* when
-prompted. This will occur at the very beginning. Once these values are entered,
-you will not need to interact with the script again.
-
-```shell
-# location of where to place the ImageNet data
-DATA_DIR=$HOME/imagenet-data
-
-# build the preprocessing script.
-bazel build slim/download_and_preprocess_imagenet
-
-# run it
-bazel-bin/slim/download_and_preprocess_imagenet "${DATA_DIR}"
-```
-
-The final line of the output script should read:
-
-```shell
-2016-02-17 14:30:17.287989: Finished writing all 1281167 images in data set.
-```
-
-When the script finishes you will find 1024 and 128 training and validation
-files in the `DATA_DIR`. The files will match the patterns `train-????-of-1024`
-and `validation-?????-of-00128`, respectively.
-
-[Congratulations!](https://www.youtube.com/watch?v=9bZkp7q19f0) You are now
-ready to train or evaluate with the ImageNet data set.
 
 # Pre-trained Models
 <a id='Pretrained'></a>
@@ -242,41 +192,30 @@ crops at multiple scales.
 
 Model | TF-Slim File | Checkpoint | Top-1 Accuracy| Top-5 Accuracy |
 :----:|:------------:|:----------:|:-------:|:--------:|
-[Inception V1](http://arxiv.org/abs/1409.4842v1)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/inception_v1.py)|[inception_v1_2016_08_28.tar.gz](http://download.tensorflow.org/models/inception_v1_2016_08_28.tar.gz)|69.8|89.6|
-[Inception V2](http://arxiv.org/abs/1502.03167)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/inception_v2.py)|[inception_v2_2016_08_28.tar.gz](http://download.tensorflow.org/models/inception_v2_2016_08_28.tar.gz)|73.9|91.8|
-[Inception V3](http://arxiv.org/abs/1512.00567)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/inception_v3.py)|[inception_v3_2016_08_28.tar.gz](http://download.tensorflow.org/models/inception_v3_2016_08_28.tar.gz)|78.0|93.9|
-[Inception V4](http://arxiv.org/abs/1602.07261)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/inception_v4.py)|[inception_v4_2016_09_09.tar.gz](http://download.tensorflow.org/models/inception_v4_2016_09_09.tar.gz)|80.2|95.2|
-[Inception-ResNet-v2](http://arxiv.org/abs/1602.07261)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/inception_resnet_v2.py)|[inception_resnet_v2_2016_08_30.tar.gz](http://download.tensorflow.org/models/inception_resnet_v2_2016_08_30.tar.gz)|80.4|95.3|
-[ResNet V1 50](https://arxiv.org/abs/1512.03385)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/resnet_v1.py)|[resnet_v1_50_2016_08_28.tar.gz](http://download.tensorflow.org/models/resnet_v1_50_2016_08_28.tar.gz)|75.2|92.2|
-[ResNet V1 101](https://arxiv.org/abs/1512.03385)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/resnet_v1.py)|[resnet_v1_101_2016_08_28.tar.gz](http://download.tensorflow.org/models/resnet_v1_101_2016_08_28.tar.gz)|76.4|92.9|
-[ResNet V1 152](https://arxiv.org/abs/1512.03385)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/resnet_v1.py)|[resnet_v1_152_2016_08_28.tar.gz](http://download.tensorflow.org/models/resnet_v1_152_2016_08_28.tar.gz)|76.8|93.2|
-[ResNet V2 50](https://arxiv.org/abs/1603.05027)^|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/resnet_v2.py)|[resnet_v2_50_2017_04_14.tar.gz](http://download.tensorflow.org/models/resnet_v2_50_2017_04_14.tar.gz)|75.6|92.8|
-[ResNet V2 101](https://arxiv.org/abs/1603.05027)^|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/resnet_v2.py)|[resnet_v2_101_2017_04_14.tar.gz](http://download.tensorflow.org/models/resnet_v2_101_2017_04_14.tar.gz)|77.0|93.7|
-[ResNet V2 152](https://arxiv.org/abs/1603.05027)^|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/resnet_v2.py)|[resnet_v2_152_2017_04_14.tar.gz](http://download.tensorflow.org/models/resnet_v2_152_2017_04_14.tar.gz)|77.8|94.1|
-[ResNet V2 200](https://arxiv.org/abs/1603.05027)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/resnet_v2.py)|[TBA]()|79.9\*|95.2\*|
-[VGG 16](http://arxiv.org/abs/1409.1556.pdf)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/vgg.py)|[vgg_16_2016_08_28.tar.gz](http://download.tensorflow.org/models/vgg_16_2016_08_28.tar.gz)|71.5|89.8|
-[VGG 19](http://arxiv.org/abs/1409.1556.pdf)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/vgg.py)|[vgg_19_2016_08_28.tar.gz](http://download.tensorflow.org/models/vgg_19_2016_08_28.tar.gz)|71.1|89.8|
-[MobileNet_v1_1.0_224](https://arxiv.org/pdf/1704.04861.pdf)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/mobilenet_v1.py)|[mobilenet_v1_1.0_224.tgz](http://download.tensorflow.org/models/mobilenet_v1_2018_02_22/mobilenet_v1_1.0_224.tgz)|70.9|89.9|
-[MobileNet_v1_0.50_160](https://arxiv.org/pdf/1704.04861.pdf)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/mobilenet_v1.py)|[mobilenet_v1_0.50_160.tgz](http://download.tensorflow.org/models/mobilenet_v1_2018_02_22/mobilenet_v1_0.5_160.tgz)|59.1|81.9|
-[MobileNet_v1_0.25_128](https://arxiv.org/pdf/1704.04861.pdf)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/mobilenet_v1.py)|[mobilenet_v1_0.25_128.tgz](http://download.tensorflow.org/models/mobilenet_v1_2018_02_22/mobilenet_v1_0.25_128.tgz)|41.5|66.3|
-[MobileNet_v2_1.4_224^*](https://arxiv.org/abs/1801.04381)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/mobilenet/mobilenet_v2.py)| [mobilenet_v2_1.4_224.tgz](https://storage.googleapis.com/mobilenet_v2/checkpoints/mobilenet_v2_1.4_224.tgz) | 74.9 | 92.5|
-[MobileNet_v2_1.0_224^*](https://arxiv.org/abs/1801.04381)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/mobilenet/mobilenet_v2.py)| [mobilenet_v2_1.0_224.tgz](https://storage.googleapis.com/mobilenet_v2/checkpoints/mobilenet_v2_1.0_224.tgz) | 71.9 | 91.0
-[NASNet-A_Mobile_224](https://arxiv.org/abs/1707.07012)#|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/nasnet/nasnet.py)|[nasnet-a_mobile_04_10_2017.tar.gz](https://storage.googleapis.com/download.tensorflow.org/models/nasnet-a_mobile_04_10_2017.tar.gz)|74.0|91.6|
-[NASNet-A_Large_331](https://arxiv.org/abs/1707.07012)#|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/nasnet/nasnet.py)|[nasnet-a_large_04_10_2017.tar.gz](https://storage.googleapis.com/download.tensorflow.org/models/nasnet-a_large_04_10_2017.tar.gz)|82.7|96.2|
-[PNASNet-5_Large_331](https://arxiv.org/abs/1712.00559)|[Code](https://github.com/tensorflow/models/blob/master/research/slim/nets/nasnet/pnasnet.py)|[pnasnet-5_large_2017_12_13.tar.gz](https://storage.googleapis.com/download.tensorflow.org/models/pnasnet-5_large_2017_12_13.tar.gz)|82.9|96.2|
+[Inception V1](http://arxiv.org/abs/1409.4842v1)|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/inception_v1.py)|[inception_v1_2016_08_28.tar.gz](http://download.tensorflow.org/models/inception_v1_2016_08_28.tar.gz)|69.8|89.6|
+[Inception V2](http://arxiv.org/abs/1502.03167)|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/inception_v2.py)|[inception_v2_2016_08_28.tar.gz](http://download.tensorflow.org/models/inception_v2_2016_08_28.tar.gz)|73.9|91.8|
+[Inception V3](http://arxiv.org/abs/1512.00567)|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/inception_v3.py)|[inception_v3_2016_08_28.tar.gz](http://download.tensorflow.org/models/inception_v3_2016_08_28.tar.gz)|78.0|93.9|
+[Inception V4](http://arxiv.org/abs/1602.07261)|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/inception_v4.py)|[inception_v4_2016_09_09.tar.gz](http://download.tensorflow.org/models/inception_v4_2016_09_09.tar.gz)|80.2|95.2|
+[Inception-ResNet-v2](http://arxiv.org/abs/1602.07261)|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/inception_resnet_v2.py)|[inception_resnet_v2_2016_08_30.tar.gz](http://download.tensorflow.org/models/inception_resnet_v2_2016_08_30.tar.gz)|80.4|95.3|
+[ResNet V1 50](https://arxiv.org/abs/1512.03385)|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/resnet_v1.py)|[resnet_v1_50_2016_08_28.tar.gz](http://download.tensorflow.org/models/resnet_v1_50_2016_08_28.tar.gz)|75.2|92.2|
+[ResNet V1 101](https://arxiv.org/abs/1512.03385)|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/resnet_v1.py)|[resnet_v1_101_2016_08_28.tar.gz](http://download.tensorflow.org/models/resnet_v1_101_2016_08_28.tar.gz)|76.4|92.9|
+[ResNet V1 152](https://arxiv.org/abs/1512.03385)|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/resnet_v1.py)|[resnet_v1_152_2016_08_28.tar.gz](http://download.tensorflow.org/models/resnet_v1_152_2016_08_28.tar.gz)|76.8|93.2|
+[ResNet V2 50](https://arxiv.org/abs/1603.05027)^|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/resnet_v2.py)|[resnet_v2_50_2017_04_14.tar.gz](http://download.tensorflow.org/models/resnet_v2_50_2017_04_14.tar.gz)|75.6|92.8|
+[ResNet V2 101](https://arxiv.org/abs/1603.05027)^|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/resnet_v2.py)|[resnet_v2_101_2017_04_14.tar.gz](http://download.tensorflow.org/models/resnet_v2_101_2017_04_14.tar.gz)|77.0|93.7|
+[ResNet V2 152](https://arxiv.org/abs/1603.05027)^|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/resnet_v2.py)|[resnet_v2_152_2017_04_14.tar.gz](http://download.tensorflow.org/models/resnet_v2_152_2017_04_14.tar.gz)|77.8|94.1|
+[ResNet V2 200](https://arxiv.org/abs/1603.05027)|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/resnet_v2.py)|[TBA]()|79.9\*|95.2\*|
+[VGG 16](http://arxiv.org/abs/1409.1556.pdf)|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/vgg.py)|[vgg_16_2016_08_28.tar.gz](http://download.tensorflow.org/models/vgg_16_2016_08_28.tar.gz)|71.5|89.8|
+[VGG 19](http://arxiv.org/abs/1409.1556.pdf)|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/vgg.py)|[vgg_19_2016_08_28.tar.gz](http://download.tensorflow.org/models/vgg_19_2016_08_28.tar.gz)|71.1|89.8|
+[MobileNet_v1_1.0_224](https://arxiv.org/pdf/1704.04861.pdf)|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/mobilenet_v1.py)|[mobilenet_v1_1.0_224_2017_06_14.tar.gz](http://download.tensorflow.org/models/mobilenet_v1_1.0_224_2017_06_14.tar.gz)|70.7|89.5|
+[MobileNet_v1_0.50_160](https://arxiv.org/pdf/1704.04861.pdf)|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/mobilenet_v1.py)|[mobilenet_v1_0.50_160_2017_06_14.tar.gz](http://download.tensorflow.org/models/mobilenet_v1_0.50_160_2017_06_14.tar.gz)|59.9|82.5|
+[MobileNet_v1_0.25_128](https://arxiv.org/pdf/1704.04861.pdf)|[Code](https://github.com/tensorflow/models/blob/master/slim/nets/mobilenet_v1.py)|[mobilenet_v1_0.25_128_2017_06_14.tar.gz](http://download.tensorflow.org/models/mobilenet_v1_0.25_128_2017_06_14.tar.gz)|41.3|66.2|
 
 ^ ResNet V2 models use Inception pre-processing and input image size of 299 (use
 `--preprocessing_name inception --eval_image_size 299` when using
 `eval_image_classifier.py`). Performance numbers for ResNet V2 models are
-reported on the ImageNet validation set.
+reported on ImageNet valdiation set.
 
-(#) More information and details about the NASNet architectures are available at this [README](nets/nasnet/README.md)
-
-All 16 float MobileNet V1 models reported in the [MobileNet Paper](https://arxiv.org/abs/1704.04861) and all
-16 quantized [TensorFlow Lite](https://www.tensorflow.org/mobile/tflite/) compatible MobileNet V1 models can be found
-[here](https://github.com/tensorflow/models/tree/master/research/slim/nets/mobilenet_v1.md).
-
-(^#) More details on MobileNetV2 models can be found [here](nets/mobilenet/README.md).
+All 16 MobileNet Models reported in the [MobileNet Paper](https://arxiv.org/abs/1704.04861) can be found [here](https://github.com/tensorflow/models/tree/master/slim/nets/mobilenet_v1.md).
 
 (\*): Results quoted from the [paper](https://arxiv.org/abs/1603.05027).
 
@@ -314,20 +253,9 @@ python train_image_classifier.py \
 This process may take several days, depending on your hardware setup.
 For convenience, we provide a way to train a model on multiple GPUs,
 and/or multiple CPUs, either synchrononously or asynchronously.
-See [model_deploy](https://github.com/tensorflow/models/blob/master/research/slim/deployment/model_deploy.py)
+See [model_deploy](https://github.com/tensorflow/models/blob/master/slim/deployment/model_deploy.py)
 for details.
 
-### TensorBoard
-
-To visualize the losses and other metrics during training, you can use
-[TensorBoard](https://github.com/tensorflow/tensorboard)
-by running the command below.
-
-```shell
-tensorboard --logdir=${TRAIN_DIR}
-```
-
-Once TensorBoard is running, navigate your web browser to http://localhost:6006.
 
 # Fine-tuning a model from an existing checkpoint
 <a id='Tuning'></a>
@@ -361,7 +289,7 @@ one only want train a sub-set of layers, so the flag `--trainable_scopes` allows
 to specify which subsets of layers should trained, the rest would remain frozen.
 
 Below we give an example of
-[fine-tuning inception-v3 on flowers](https://github.com/tensorflow/models/blob/master/research/slim/scripts/finetune_inception_v3_on_flowers.sh),
+[fine-tuning inception-v3 on flowers](https://github.com/tensorflow/models/blob/master/slim/scripts/finetune_inception_v3_on_flowers.sh),
 inception_v3  was trained on ImageNet with 1000 class labels, but the flowers
 dataset only have 5 classes. Since the dataset is quite small we will only train
 the new layers.
@@ -404,8 +332,6 @@ $ python eval_image_classifier.py \
     --model_name=inception_v3
 ```
 
-See the [evaluation module example](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/contrib/slim#evaluation-loop)
-for an example of how to evaluate a model at multiple checkpoints during or after the training.
 
 # Exporting the Inference Graph
 <a id='Export'></a>
@@ -466,7 +392,8 @@ bazel-bin/tensorflow/examples/label_image/label_image \
   --graph=/tmp/frozen_inception_v3.pb \
   --labels=/tmp/imagenet_slim_labels.txt \
   --input_mean=0 \
-  --input_std=255
+  --input_std=255 \
+  --logtostderr
 ```
 
 
@@ -476,17 +403,17 @@ bazel-bin/tensorflow/examples/label_image/label_image \
 #### The model runs out of CPU memory.
 
 See
-[Model Runs out of CPU memory](https://github.com/tensorflow/models/tree/master/research/inception#the-model-runs-out-of-cpu-memory).
+[Model Runs out of CPU memory](https://github.com/tensorflow/models/tree/master/inception#the-model-runs-out-of-cpu-memory).
 
 #### The model runs out of GPU memory.
 
 See
-[Adjusting Memory Demands](https://github.com/tensorflow/models/tree/master/research/inception#adjusting-memory-demands).
+[Adjusting Memory Demands](https://github.com/tensorflow/models/tree/master/inception#adjusting-memory-demands).
 
 #### The model training results in NaN's.
 
 See
-[Model Resulting in NaNs](https://github.com/tensorflow/models/tree/master/research/inception#the-model-training-results-in-nans).
+[Model Resulting in NaNs](https://github.com/tensorflow/models/tree/master/inception#the-model-training-results-in-nans).
 
 #### The ResNet and VGG Models have 1000 classes but the ImageNet dataset has 1001
 
@@ -521,4 +448,4 @@ image_preprocessing_fn = preprocessing_factory.get_preprocessing(
 #### What hardware specification are these hyper-parameters targeted for?
 
 See
-[Hardware Specifications](https://github.com/tensorflow/models/tree/master/research/inception#what-hardware-specification-are-these-hyper-parameters-targeted-for).
+[Hardware Specifications](https://github.com/tensorflow/models/tree/master/inception#what-hardware-specification-are-these-hyper-parameters-targeted-for).

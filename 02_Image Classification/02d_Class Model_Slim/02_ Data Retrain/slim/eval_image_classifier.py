@@ -172,7 +172,7 @@ def main(_):
       num_batches = math.ceil(dataset.num_samples / float(FLAGS.batch_size))
 
     if tf.gfile.IsDirectory(FLAGS.checkpoint_path):
-        checkpoint_path = tf.train.latest_checkpoint(FLAGS.checkpoint_path)
+      checkpoint_path = tf.train.latest_checkpoint(FLAGS.checkpoint_path)
     else:
       checkpoint_path = FLAGS.checkpoint_path
 
@@ -185,16 +185,6 @@ def main(_):
         num_evals=num_batches,
         eval_op=list(names_to_updates.values()),
         variables_to_restore=variables_to_restore)
-
-    # slim.evaluation.evaluation_loop(
-    #     master=FLAGS.master,
-    #     checkpoint_dir=FLAGS.checkpoint_path,
-    #     logdir=FLAGS.eval_dir,
-    #     num_evals=num_batches,
-    #     eval_op=list(names_to_updates.values()),
-    #     variables_to_restore=variables_to_restore,
-    #     eval_interval_secs=300
-    #     )
 
 
 if __name__ == '__main__':

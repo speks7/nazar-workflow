@@ -555,6 +555,7 @@ def main(_):
     ###########################
     slim.learning.train(
         train_tensor,
+        session_config=tf.ConfigProto(allow_soft_placement=True),
         logdir=FLAGS.train_dir,
         master=FLAGS.master,
         is_chief=(FLAGS.task == 0),
